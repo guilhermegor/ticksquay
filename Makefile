@@ -25,6 +25,8 @@ restart: down up
 
 
 ### TESTING COMMANDS ###
+
+# build/run docker custom image
 test_airflow_env_build:
 	docker buildx build --debug --build-arg MAINTAINER=$(grep MAINTAINER airflow_mktdata.env | cut -d '=' -f2) -f airflow-env_dockerfile -t airflow-env .
 
@@ -36,6 +38,12 @@ test_airflow_env_run: test_airflow_env_build
 
 test_airflow_env_run_no_cache: test_airflow_env_build_no_cache
 	docker run -d --name airflow-env airflow-env
+	docker rm airflow-env
+	docker rmi airflow-env
+
+# containers integrity
+test_airflow_packages:
+	./shell/test_airflow_packages.sh
 
 
 ### SYSTEM COMMANDS ###

@@ -20,13 +20,13 @@ These instructions will get you a copy of the project running on your local mach
 ### Installing
 
 * Setting .env files:
+
 ```bash
 (bash)
 
 # execute cd regardless of .env files have already being created
 cd complete/path/to/project
-shell/env_config.sh
-
+./shell/env_config.sh
 ```
 
 * Configure .env and data/postgres_mktdata.env with personal data (must replace PLEASE_FILL and fill@me.com example credentials)
@@ -44,30 +44,34 @@ shell/env_config.sh
 # copy the path, following on export is a command with the default installation path
 which mingw32-make
 export PATH=$PATH:/c/MinGW/bin
+
+# windows
 mingw32-make --version
 
+# macOS / linux
+make --version
 ```
 
 ## Running the tests
 
-* Build initial airflow env commands in order to look for possible issues in the bash files
+* Check packages installation in Airflow
+
 ```bash
 (bash)
 
-docker buildx build --debug --build-arg MAINTAINER=$(grep MAINTAINER airflow_mktdata.env | cut -d '=' -f2) -f airflow-env_dockerfile -t airflow-env .
-# build with no cache, in order to force reconstruction
-docker buildx build --no-cache --build-arg MAINTAINER=$(grep MAINTAINER airflow_mktdata.env | cut -d '=' -f2) -f airflow-env_dockerfile -t airflow-env .
-docker run -d --name airflow-env airflow-env
+mingw32-make test_airflow_packages
 ```
 
-* Connect to Airflow CLI
+* Build initial Airflow env commands in order to look for possible issues in the bash files
 
 ```bash
 (bash)
 
-docker ps
-docker exec -it mktdata_scheduler-airflow-webserver-1 bash
+# cached version
+mingw32-make test_airflow_env_run
 
+# no-cache version
+mingw32-make test_airflow_env_run_no_cache
 ```
 
 * Checking for import errors
@@ -212,6 +216,7 @@ ls -ld ./data
 
 * [Airflow Docker Compose - General](https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html)
 * [Airflow Docker Compose - 2.10.4](https://airflow.apache.org/docs/apache-airflow/2.10.4/docker-compose.yaml)
+* [PostgreSQL](https://www.postgresql.org/)
 
 
 ## Authors

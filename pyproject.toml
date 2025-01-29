@@ -8,7 +8,6 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.9"
 python-dotenv = "1.0.1"
-pre-commit = "^4.0.1"
 workalendar = "15.0.1"
 businesstimedelta = "1.0.1"
 pandas = "2.1.2"
@@ -19,6 +18,17 @@ urllib3 = "1.26.3"
 lxml = "4.9.3"
 psycopg2 = "2.8.6"
 stpstone = "0.1.0"
+
+[tool.poetry.dev-dependencies]
+pre-commit = "^4.0.1"
+pytest = "^7.0"
+black = "^23.0"
+flake8 = "^6.0"
+tox = "^3.27"
+ipython = "^8.7.0"
+
+[tool.poetry.extras]
+testing = ["pytest", "tox", "flake8"]
 
 
 [build-system]

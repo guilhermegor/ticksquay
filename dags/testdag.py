@@ -5,17 +5,17 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python import PythonOperator
 from datetime import datetime
 
-# Function to be run by the PythonOperator
+
 def print_hello():
     print("Hello, Airflow!")
 
-# define the DAG
+
 with DAG(
     'simple_dag',
     description='A simple Airflow DAG',
-    schedule_interval='@daily',  # Runs once a day
+    schedule_interval='@daily',
     start_date=datetime(2025, 1, 28),
-    catchup=False,  # Don't backfill past days
+    catchup=False,
 ) as dag:
 
     # define tasks

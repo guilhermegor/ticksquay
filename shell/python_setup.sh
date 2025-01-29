@@ -12,5 +12,7 @@ poetry cache clear --all pypi
 
 # install dependencies using Poetry
 poetry init
-poetry install --no-interaction --no-ansi
+poetry install --no-interaction --no-ansi --no-dev
+
+# activate the virtual environment
 poetry shell
