@@ -13,6 +13,10 @@ These instructions will get you a copy of the project running on your local mach
 
 * Python version, libs and Docker images already installed in Dockerfile.
 
+* Docker
+
+* Makefile
+
 ### Installing
 
 * Setting .env files:
@@ -29,7 +33,7 @@ shell/env_config.sh
 
 * Install Docker: https://docs.docker.com/desktop/
 
-* Install Makefile (optional):
+* Install Makefile:
     * Windows: https://medium.com/@samsorrahman/how-to-run-a-makefile-in-windows-b4d115d7c516
     * MacOS: https://wahyu-ehs.medium.com/makefile-on-mac-os-2ef0e67b0a15
     * Linux: https://stackoverflow.com/questions/3915067/what-are-makefiles-make-install-etc
@@ -42,17 +46,6 @@ which mingw32-make
 export PATH=$PATH:/c/MinGW/bin
 mingw32-make --version
 
-```
-
-* Open Docker
-
-* Check availability of Docker through CLI:
-
-```bash
-(bash)
-
-docker --version
-docker run hello-world
 ```
 
 ## Running the tests
@@ -96,9 +89,16 @@ airflow dags trigger up2data_b3
 ```
 
 
-## Deployment - With Makefile
+## Deployment
 
-* Preferable
+* Check Docker availability:
+
+```bash
+(bash)
+
+mingw32-make check_docker
+
+```
 
 * Running Docker composes:
 
@@ -136,60 +136,6 @@ mingw32-make restart_no_cache
 
 mingw32-make restart
 
-```
-
-
-## Deployment - Without Makefile
-
-* Running Docker composes:
-
-```bash
-(bash)
-
-# mktdata database
-docker compose --env-file data/postgres_mktdata.env -f data/postgres_docker-compose.yml up -d
-# mktdata scheduler
-docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d
-```
-
-* Connecting to database through pgadmin:
-
-    * access http://localhost:5433/ in your local machine
-    * login with email address / unsername and password configured in data / postgres_mktdata.env
-![alt text](data/img/login-pgadmin.png)
-    * configure server:<br>
-![alt text](data/img/configure-server-1.png)
-![alt text](data/img/configure-server-2.png)
-![alt text](data/img/configure-server-3.png)
-![alt text](data/img/configure-server-4.png)
-
-### Restarting All Services
-
-* Droping all services:
-```bash
-(bash)
-
-# dropping all services
-docker compose -f data/postgres_docker-compose.yml down -v --remove-orphans
-# docker rm airflow_init
-docker compose -f airflow_docker-compose.yml down -v --remove-orphans
-docker rm -f airflow-env
-docker system prune --volumes --force
-docker network prune -f
-docker image prune -a -y
-# printing docker compose config
-docker compose --env-file data/postgres_mktdata.env -f data/postgres_docker-compose.yml config
-
-```
-
-* Initiating docker composes:
-```bash
-(bash)
-
-# mktdata database
-docker compose --env-file data/postgres_mktdata.env -f data/postgres_docker-compose.yml up -d
-# mktdata scheduler
-docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d
 ```
 
 
