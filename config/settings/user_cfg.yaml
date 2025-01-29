@@ -1,0 +1,49 @@
+# configuration panel
+conf_panel:
+  bl_use_timer: False
+
+default_args_airflow:
+  owner: guilhermegor
+  # run task regardless of previous tasks success/failure
+  depends_on_past: False
+  # email addresses for notification
+  email: {{list_emails_address}}
+  # send email if task fails
+  email_on_failure: True
+  # send email if task is retried
+  email_on_retry: False
+  # delay between retries
+  retry_delay: 00:05:00
+  # number of retries
+  retries: 1
+  # use exponential backoff between retries
+  retry_exponential_backoff: True
+  # backoff factor for exporential backoff
+  backoff_factor: 1
+  # maximum retry delay
+  max_retry_delay: 1 day
+  start_date: {{start_date}}
+  end_date: {{end_date}}
+  # check cron scheduler at: https://crontab.guru/
+  schedule_interval: '@daily'
+  timezone: UTC
+  catchup: False
+  on_failure_callback: null
+  on_success_callback: null
+  on_retry_callback: null
+  # default view of dag: graph or tree
+  default_view: graph
+  # timeout for the whole dag to run
+  dagrun_timeout: 01:00:00
+  # service level agreement for the dag to run (SLA)
+  sla: 02:00:00
+  # maximum active runs, of the same dag, at the same time
+  max_active_runs: 1
+  # callback to trigger when SLA is missed
+  sla_miss_callback: null
+  # whether to notify when SLA is missed
+  sla_notified: False
+
+up2data_b3:
+  wd_bef_inf: 2
+  wd_bef_sup: 1

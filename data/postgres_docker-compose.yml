@@ -1,0 +1,53 @@
+name: mktdata_db
+
+services:
+  postgres_mktdata:
+    container_name: postgres_mktdata
+    image: postgres:17.2
+    # change permission of the directory /var/lib/postgresql/data to 0700
+    #   - 0700: owner, the postgres user in this case - full permission
+    #   - full permission: read, write, execute
+    #   - /var/lib/postgresql/data: default directory where postgres stores its data
+    command: > 
+      bash -c "chmod -R 0700 /var/lib/postgresql/data &&docker-entrypoint.sh postgres"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db_init_scripts:/docker-entrypoint-initdb.d:rw
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres_network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: no
+
+  pgadmin_mktdata:
+    container_name: pgadmin_mktdata
+    image: dpage/pgadmin4:8.14.0
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5433:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres_mktdata
+    networks:
+      - postgres_network
+    restart: no
+
+networks:
+  postgres_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  pgadmin_data:

@@ -1,0 +1,9 @@
+postgres_db:
+  dbname: mktdata_collector
+  host: postgres_mktdata
+  port: 5432
+  schema_raw: RAW
+
+instruments_register_row:
+  table_name: RAW.B3_INSTRM_REG_B3
+  bl_insert_or_ignore: False

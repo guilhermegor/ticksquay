@@ -1,0 +1,19 @@
+
+keys:
+  # ! URL E ID_CHANNEL GENERICOS, FAVOR SUBSITUTIR SE NECESSARIO
+  url: URL
+  id_channel: ID_CHANNEL
+  # informações de acesso ao webhook
+  nome_webhook: WEBHOOK_SLACK
+  username: USERNAME
+  icon_emoji: ICON_EMOJI
+rotina:
+  titulo: TITULO
+  mensagem: >
+    ROTINA: {} 
+    \n \n \t - Executadado em: {}. 
+    \n \n \t - Máquina do operador: {} 
+    \n \n \t - Sigla operador: {} 
+    \n \n \t - Evidências disponíveis em: {} 
+    \n \n \t - Logs disponíveis em: {} \n \n \t Abs,
+  bl_debug_mode: False

@@ -1,0 +1,36 @@
+FROM python:3.9.13-slim
+
+# maintainer
+ARG MAINTAINER
+ENV MAINTAINER=${MAINTAINER}
+LABEL maintainer=${MAINTAINER}
+
+# changing the user
+USER root
+
+
+### LINUX DEPENDENCIES ###
+
+# copying files and folders to the container
+COPY . /opt/airflow/.
+
+# work directory
+WORKDIR /opt/airflow
+
+# set the python_setup.sh file to be executable
+RUN chmod +x ./shell/linux_setup.sh
+
+# execute the airflow_commands.sh
+RUN bash ./shell/linux_setup.sh
+
+
+### PYTHON DEPENDENCIES ###
+
+# set the python_setup.sh file to be executable
+RUN chmod +x ./shell/python_setup.sh
+
+# execute the airflow_commands.sh
+RUN bash ./shell/python_setup.sh
+
+# changing the user
+USER airflow

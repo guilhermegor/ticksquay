@@ -1,0 +1,10 @@
+FROM python:3.9.13-slim
+LABEL maintainer="${MAINTAINER}"
+
+### FINAL SETUP OF AIRFLOW ###
+
+# set the airflow_setup.sh file to be executable
+RUN chmod +x ./shell/airflow_setup.sh
+
+# execute the airflow_commands.sh
+RUN bash /shell/airflow_setup.sh
