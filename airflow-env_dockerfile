@@ -17,11 +17,11 @@ COPY . /opt/airflow/.
 # work directory
 WORKDIR /opt/airflow
 
-# set the python_setup.sh file to be executable
-RUN chmod +x ./shell/linux_setup.sh
+# # set the python_setup.sh file to be executable
+# RUN chmod +x ./shell/linux_setup.sh
 
-# execute the airflow_commands.sh
-RUN bash ./shell/linux_setup.sh
+# # execute the airflow_commands.sh
+# RUN bash ./shell/linux_setup.sh
 
 
 ### PYTHON DEPENDENCIES ###

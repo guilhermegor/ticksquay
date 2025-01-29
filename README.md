@@ -11,7 +11,6 @@ These instructions will get you a copy of the project running on your local mach
 
 ### Prerequisities
 
-* Docker installed: https://docs.docker.com/desktop/
 * Python version, libs and Docker images already installed in Dockerfile.
 
 ### Installing
@@ -28,9 +27,26 @@ shell/env_config.sh
 
 * Configure .env and data/postgres_mktdata.env with personal data (must replace PLEASE_FILL and fill@me.com example credentials)
 
+* Install Docker: https://docs.docker.com/desktop/
+
+* Install Makefile (optional):
+    * Windows: https://medium.com/@samsorrahman/how-to-run-a-makefile-in-windows-b4d115d7c516
+    * MacOS: https://wahyu-ehs.medium.com/makefile-on-mac-os-2ef0e67b0a15
+    * Linux: https://stackoverflow.com/questions/3915067/what-are-makefiles-make-install-etc
+    * Add to Git Bash path:
+```bash
+(bash)
+
+# copy the path, following on export is a command with the default installation path
+which mingw32-make
+export PATH=$PATH:/c/MinGW/bin
+mingw32-make --version
+
+```
+
 * Open Docker
 
-* Check availability of Docker CLI:
+* Check availability of Docker through CLI:
 
 ```bash
 (bash)
@@ -80,7 +96,50 @@ airflow dags trigger up2data_b3
 ```
 
 
-## Deployment
+## Deployment - With Makefile
+
+* Preferable
+
+* Running Docker composes:
+
+```bash
+(bash)
+
+mingw32-make up
+
+```
+
+* Connecting to database through pgadmin:
+
+    * access http://localhost:5433/ in your local machine
+    * login with email address / unsername and password configured in data / postgres_mktdata.env
+![alt text](data/img/login-pgadmin.png)
+    * configure server:<br>
+![alt text](data/img/configure-server-1.png)
+![alt text](data/img/configure-server-2.png)
+![alt text](data/img/configure-server-3.png)
+![alt text](data/img/configure-server-4.png)
+
+### Restarting All Services
+
+* No cache mode:
+```bash
+(bash)
+
+mingw32-make restart_no_cache
+
+```
+
+* Cache mode:
+```bash
+(bash)
+
+mingw32-make restart
+
+```
+
+
+## Deployment - Without Makefile
 
 * Running Docker composes:
 
@@ -106,24 +165,24 @@ docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -
 
 ### Restarting All Services
 
-* Droping all services
+* Droping all services:
 ```bash
 (bash)
 
 # dropping all services
-docker compose -f postgres_docker-compose.yml down -v --remove-orphans
+docker compose -f data/postgres_docker-compose.yml down -v --remove-orphans
 # docker rm airflow_init
 docker compose -f airflow_docker-compose.yml down -v --remove-orphans
 docker rm -f airflow-env
 docker system prune --volumes --force
 docker network prune -f
-docker image prune -a
+docker image prune -a -y
 # printing docker compose config
 docker compose --env-file data/postgres_mktdata.env -f data/postgres_docker-compose.yml config
 
 ```
 
-* Initiating docker composes
+* Initiating docker composes:
 ```bash
 (bash)
 
@@ -133,7 +192,8 @@ docker compose --env-file data/postgres_mktdata.env -f data/postgres_docker-comp
 docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d
 ```
 
-### Error Handling
+
+## Error Handling
 
 * Saving logs:
 ```bash

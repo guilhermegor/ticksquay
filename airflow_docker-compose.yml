@@ -52,7 +52,9 @@ x-airflow-common:
   # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
   # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
   image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.10.4}
-  # build: .
+  build:
+      context: .
+      dockerfile: airflow-env_dockerfile
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
@@ -117,13 +119,6 @@ services:
       start_period: 30s
     restart: always
 
-  airflow-env:
-    container_name: airflow-env
-    build:
-      context: .
-      dockerfile: airflow-env_dockerfile
-    restart: no
-
   airflow-webserver:
     <<: *airflow-common
     command: webserver
@@ -139,8 +134,6 @@ services:
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
-        condition: service_completed_successfully
-      airflow-env:
         condition: service_completed_successfully
 
   airflow-scheduler:
