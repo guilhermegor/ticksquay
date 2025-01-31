@@ -32,6 +32,10 @@ else
     echo "Unsupported OS: $OS"
 fi
 
+# wait for docker to be fully initialized
+echo "Waiting 60 seconds for Docker to fully initialize..."
+sleep 60
+
 # docker CLI basic commands
 docker --version
 docker run --name hello-world hello-world

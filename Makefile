@@ -1,49 +1,60 @@
-.DEFAULT_GOAL:= up
+.DEFAULT_GOAL:= docker_airflow_up
+
 
 ### DEPLOYMENT COMMANDS ###
-up:
-	docker compose --env-file data/postgres_mktdata.env -f data/postgres_docker-compose.yml up -d
-	docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d
+docker_rm_rmi_airflow_env:
+	@docker ps -a --filter "name=airflow-env" -q | grep -q . && docker rm airflow-env || true
+	@docker rmi airflow-env:1.0 || true --force
 
-down_no_cache:
+docker_airflow_up_no_cache: docker_rm_rmi_airflow_env
+	docker build --no-cache -f airflow-env_dockerfile -t airflow-env:1.0 .
+	docker compose --env-file data/postgres_mktdata.env -f data/postgres_docker-compose.yml up -d
+	# docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d --no-deps --build airflow-webserver airflow-scheduler
+	docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d --build airflow-webserver airflow-scheduler
+
+docker_airflow_up:
+	docker build -f airflow-env_dockerfile -t airflow-env:1.0 .
+	docker compose --env-file data/postgres_mktdata.env -f data/postgres_docker-compose.yml up -d
+	# docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d --no-deps --build airflow-webserver airflow-scheduler
+	docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d --build airflow-webserver airflow-scheduler
+
+docker_airflow_down_no_cache: docker_rm_rmi_airflow_env
 	docker compose -f data/postgres_docker-compose.yml down -v --remove-orphans
 	docker compose -f airflow_docker-compose.yml down -v --remove-orphans
-	docker rm -f airflow-env
 	docker system prune --volumes --force
 	docker network prune -f
 	docker volume prune -f
 	docker builder prune -a --force
 	docker image prune -a --force
 
-down:
+docker_airflow_down:
 	docker compose -f data/postgres_docker-compose.yml down
 	docker compose -f airflow_docker-compose.yml down
+	docker rm -f airflow-env:1.0
 
-restart_no_cache: down_no_cache up
+docker_airflow_restart_no_cache: docker_airflow_down_no_cache docker_airflow_up
 
-restart: down up
+docker_airflow_restart: docker_airflow_down docker_airflow_up
 
 
 ### TESTING COMMANDS ###
 
 # build/run docker custom image
 test_airflow_env_build:
-	docker buildx build --debug --build-arg MAINTAINER=$(grep MAINTAINER airflow_mktdata.env | cut -d '=' -f2) -f airflow-env_dockerfile -t airflow-env .
+	docker build --debug -f airflow-env_dockerfile -t airflow-env:1.0 .
 
-test_airflow_env_build_no_cache:
-	docker buildx build --no-cache --build-arg MAINTAINER=$(grep MAINTAINER airflow_mktdata.env | cut -d '=' -f2) -f airflow-env_dockerfile -t airflow-env .
+test_airflow_env_build_no_cache: docker_rm_rmi_airflow_env
+	docker build --no-cache -f airflow-env_dockerfile -t airflow-env:1.0 .
 
-test_airflow_env_run: test_airflow_env_build
-	docker run -d --name airflow-env airflow-env
+test_airflow_env_build_run: test_airflow_env_build
+	docker run -d --name airflow-env airflow-env:1.0
 
-test_airflow_env_run_no_cache: test_airflow_env_build_no_cache
-	docker run -d --name airflow-env airflow-env
-	docker rm airflow-env
-	docker rmi airflow-env
+test_airflow_env_build_run_no_cache: test_airflow_env_build_no_cache
+	docker run -d --name airflow-env airflow-env:1.0
 
-# containers integrity
-test_airflow_packages:
-	./shell/test_airflow_packages.sh
+# packages
+test_airflow_packages_installation:
+	./shell/test_airflow_packages_installation.sh
 
 
 ### SYSTEM COMMANDS ###

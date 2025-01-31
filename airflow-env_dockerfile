@@ -1,27 +1,20 @@
-FROM python:3.9.13-slim
+FROM apache/airflow:2.10.4
 
-# maintainer
-ARG MAINTAINER
-ENV MAINTAINER=${MAINTAINER}
-LABEL maintainer=${MAINTAINER}
-
-# changing the user
+# changing user
 USER root
+
+# copy requirements and change working directory
+COPY . /opt/airflow/.
+WORKDIR /opt/airflow
 
 
 ### LINUX DEPENDENCIES ###
 
-# copying files and folders to the container
-COPY . /opt/airflow/.
+# set the python_setup.sh file to be executable
+RUN chmod +x ./shell/linux_setup.sh
 
-# work directory
-WORKDIR /opt/airflow
-
-# # set the python_setup.sh file to be executable
-# RUN chmod +x ./shell/linux_setup.sh
-
-# # execute the airflow_commands.sh
-# RUN bash ./shell/linux_setup.sh
+# execute the airflow_commands.sh
+RUN bash ./shell/linux_setup.sh
 
 
 ### PYTHON DEPENDENCIES ###
@@ -32,5 +25,13 @@ RUN chmod +x ./shell/python_setup.sh
 # execute the airflow_commands.sh
 RUN bash ./shell/python_setup.sh
 
-# changing the user
+# changing user
 USER airflow
+
+# python dependencies
+RUN python3.9 -m pip install --upgrade pip \
+    && python3.9 -m pip install --no-cache-dir -r /opt/airflow/requirements.txt
+
+# change default python version
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1
+RUN update-alternatives --set python /usr/bin/python3.9

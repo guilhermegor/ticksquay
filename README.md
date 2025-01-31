@@ -11,11 +11,17 @@ These instructions will get you a copy of the project running on your local mach
 
 ### Prerequisities
 
-* Python version, libs and Docker images already installed in Dockerfile.
+Before you begin, ensure you have the following installed and set up:
 
-* Docker
+* Docker (v4.37.1 or higher, validated with v4.37.1, but newer versions may work);
 
-* Makefile
+* Makefile (v3.82.90 or higher, validated with v3.82.90, but newer versions may work);
+
+* A web browser (for accessing web interfaces, if UI interaction is necessary; this is not required for CLI interactions).
+
+* Python, packages and Docker images, with specific versions for deploying, should already be available in the current Docker Compose setup.
+
+Make sure your environment meets these prerequisites to avoid any issues while setting up and running the project.
 
 ### Installing
 
@@ -54,24 +60,35 @@ make --version
 
 ## Running the tests
 
-* Check packages installation in Airflow
-
-```bash
-(bash)
-
-mingw32-make test_airflow_packages
-```
-
-* Build initial Airflow env commands in order to look for possible issues in the bash files
+* Build initial Airflow env commands, in order to look for possible issues in the bash files
 
 ```bash
 (bash)
 
 # cached version
-mingw32-make test_airflow_env_run
+mingw32-make test_airflow_env_build_run
 
 # no-cache version
-mingw32-make test_airflow_env_run_no_cache
+mingw32-make test_airflow_env_build_run_no_cache
+```
+
+* Check packages installation in Airflow
+
+```bash
+(bash)
+
+docker run -it airflow-env:1.0 bash
+$ python
+$ import stpstone
+
+mingw32-make test_airflow_packages_installation
+```
+
+* Removing container and image:
+```bash
+(bash)
+
+mingw32-make test_rm_rmi_airflow_env
 ```
 
 * Checking for import errors
@@ -89,7 +106,6 @@ airflow dags list-import-errors
 # after correcting, restart dag - example:
 airflow tasks clear -d -y up2data_b3
 airflow dags trigger up2data_b3
-
 ```
 
 
@@ -101,7 +117,6 @@ airflow dags trigger up2data_b3
 (bash)
 
 mingw32-make check_docker
-
 ```
 
 * Running Docker composes:
@@ -109,8 +124,11 @@ mingw32-make check_docker
 ```bash
 (bash)
 
-mingw32-make up
+# no cache
+mingw32-make docker_airflow_up_no_cache
 
+# cached version
+mingw32-make docker_airflow_up
 ```
 
 * Connecting to database through pgadmin:
@@ -130,16 +148,14 @@ mingw32-make up
 ```bash
 (bash)
 
-mingw32-make restart_no_cache
-
+mingw32-make docker_airflow_restart_no_cache
 ```
 
 * Cache mode:
 ```bash
 (bash)
 
-mingw32-make restart
-
+mingw32-make docker_airflow_restart
 ```
 
 
@@ -217,6 +233,7 @@ ls -ld ./data
 * [Airflow Docker Compose - General](https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html)
 * [Airflow Docker Compose - 2.10.4](https://airflow.apache.org/docs/apache-airflow/2.10.4/docker-compose.yaml)
 * [PostgreSQL](https://www.postgresql.org/)
+* [Docker](https://hub.docker.com/)
 
 
 ## Authors

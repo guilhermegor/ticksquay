@@ -11,7 +11,7 @@ def print_hello():
 
 
 with DAG(
-    'simple_dag',
+    'demo_dag',
     description='A simple Airflow DAG',
     schedule_interval='@daily',
     start_date=datetime(2025, 1, 28),

@@ -1,18 +1,12 @@
 #!/bin/bash
 
-# install Poetry
-pip install --upgrade pip
-pip install poetry==1.8.5
+wget https://www.python.org/ftp/python/3.9.18/Python-3.9.18.tgz && \
+    tar xzf Python-3.9.18.tgz && \
+    cd Python-3.9.18 && \
+    ./configure --enable-optimizations && \
+    make -j$(nproc) && \
+    make altinstall && \
+    cd .. && \
+    rm -rf Python-3.9.18 Python-3.9.18.tgz
 
-# configure Poetry to avoid virtual environment creation (use the current environment instead)
-poetry config virtualenvs.create false
-
-# purging poetry cache
-poetry cache clear --all pypi
-
-# install dependencies using Poetry
-poetry init
-poetry install --no-interaction --no-ansi --no-dev
-
-# activate the virtual environment
-poetry shell
+python3.9 -m ensurepip --upgrade
