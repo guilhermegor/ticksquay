@@ -11,7 +11,9 @@ These instructions will get you a copy of the project running on your local mach
 
 ### Prerequisities
 
-Before you begin, ensure you have the following installed and set up:
+Before you begin, ensure you have the following basic set up:
+
+* 8 GB RAM +; 12 GB Hard Disk +
 
 * Docker (v4.37.1 or higher, validated with v4.37.1, but newer versions may work);
 
@@ -77,10 +79,22 @@ mingw32-make test_airflow_env_build_run_no_cache
 ```bash
 (bash)
 
+# check python version, run the airflow-env container and check stpstone installation
 docker run -it airflow-env:1.0 bash
-$ python
-$ import stpstone
+# python version
+$ python --version
+# verify the user
+$ whoami
+# check permissions
+$ touch /opt/airflow/test.txt
+# check stpstone installation, both in python and python3.9 - it is important to be referenced in 
+#   python 3.9 because is the environment variable that will be referenced by airflow docker compose
+$ python3.9 -c "import stpstone; print(dir(stpstone))"
+$ python -c "import stpstone; print(dir(stpstone))"
 
+# check stpstone installation in every airflow service
+#   ! docker_airflow_up_no_cache need to be runned previously
+mingw32-make docker_airflow_up_no_cache 
 mingw32-make test_airflow_packages_installation
 ```
 

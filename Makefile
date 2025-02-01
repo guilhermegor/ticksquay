@@ -41,10 +41,14 @@ docker_airflow_restart: docker_airflow_down docker_airflow_up
 
 # build/run docker custom image
 test_airflow_env_build:
-	docker build --debug -f airflow-env_dockerfile -t airflow-env:1.0 .
+	docker build --debug -f airflow-env_dockerfile -t airflow-env:1.0 \
+		--build-arg USER=$(grep USER airflow_mktdata.env | cut -d '=' -f2) \
+		--build-arg AIRFLOW_UID=$(grep AIRFLOW_UID airflow_mktdata.env | cut -d '=' -f2) .
 
 test_airflow_env_build_no_cache: docker_rm_rmi_airflow_env
-	docker build --no-cache -f airflow-env_dockerfile -t airflow-env:1.0 .
+	docker build --no-cache -f airflow-env_dockerfile -t airflow-env:1.0 \
+		--build-arg USER=$(grep USER airflow_mktdata.env | cut -d '=' -f2) \
+		--build-arg AIRFLOW_UID=$(grep AIRFLOW_UID airflow_mktdata.env | cut -d '=' -f2) .
 
 test_airflow_env_build_run: test_airflow_env_build
 	docker run -d --name airflow-env airflow-env:1.0
@@ -54,7 +58,7 @@ test_airflow_env_build_run_no_cache: test_airflow_env_build_no_cache
 
 # packages
 test_airflow_packages_installation:
-	./shell/test_airflow_packages_installation.sh
+	./tests/airflow_packages_installation.sh
 
 
 ### SYSTEM COMMANDS ###

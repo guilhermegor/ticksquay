@@ -18,7 +18,7 @@ append_if_not_exist() {
 # airflow_mktdata.env file setup
 if [ ! -f "$AIRFLOW_ENV_FILE" ]; then
     echo "Creating airflow_mktdata.env file..."
-    append_if_not_exist "$AIRFLOW_ENV_FILE" "MAINTAINER" "PLEASE_FILL"
+    append_if_not_exist "$AIRFLOW_ENV_FILE" "USER" "PLEASE_FILL"
     append_if_not_exist "$AIRFLOW_ENV_FILE" "AIRFLOW_IMAGE_NAME" "apache/airflow:2.10.4"
     append_if_not_exist "$AIRFLOW_ENV_FILE" "AIRFLOW_UID" "50000"
     append_if_not_exist "$AIRFLOW_ENV_FILE" "_AIRFLOW_WWW_USER_USERNAME" "PLEASE_FILL"

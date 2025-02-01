@@ -1,5 +1,5 @@
--- ensure connection to mktdata_collector database
-\connect mktdata_collector;
+-- ensure connection to registries_collector database
+\connect registries_collector;
 
 -- create the table B3_INSTRM_REG if it doesn't exist
 DO $$
