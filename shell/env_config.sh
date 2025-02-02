@@ -18,18 +18,18 @@ append_if_not_exist() {
 # airflow_mktdata.env file setup
 if [ ! -f "$AIRFLOW_ENV_FILE" ]; then
     echo "Creating airflow_mktdata.env file..."
-    append_if_not_exist "$AIRFLOW_ENV_FILE" "USER" "PLEASE_FILL"
-    append_if_not_exist "$AIRFLOW_ENV_FILE" "AIRFLOW_IMAGE_NAME" "apache/airflow:2.10.4"
     append_if_not_exist "$AIRFLOW_ENV_FILE" "AIRFLOW_UID" "50000"
-    append_if_not_exist "$AIRFLOW_ENV_FILE" "_AIRFLOW_WWW_USER_USERNAME" "PLEASE_FILL"
+    append_if_not_exist "$AIRFLOW_ENV_FILE" "AIRFLOW_IMAGE_NAME" "airflow-env:1.0"
+    append_if_not_exist "$AIRFLOW_ENV_FILE" "USER" "root"
+    append_if_not_exist "$AIRFLOW_ENV_FILE" "_AIRFLOW_WWW_USER_USERNAME" "airflow"
     append_if_not_exist "$AIRFLOW_ENV_FILE" "_AIRFLOW_WWW_USER_PASSWORD" "PLEASE_FILL"
 fi
 
 # postgres_mktdata.env file setup
 if [ ! -f "$POSTGRES_ENV_FILE" ]; then
     echo "Creating postgres_mktdata.env file..."
-    append_if_not_exist "$POSTGRES_ENV_FILE" "POSTGRES_USER" "PLEASE_FILL"
+    append_if_not_exist "$POSTGRES_ENV_FILE" "POSTGRES_USER" "postgres"
     append_if_not_exist "$POSTGRES_ENV_FILE" "POSTGRES_PASSWORD" "PLEASE_FILL"
-    append_if_not_exist "$POSTGRES_ENV_FILE" "PGADMIN_DEFAULT_EMAIL" "fill@me.com"
+    append_if_not_exist "$POSTGRES_ENV_FILE" "PGADMIN_DEFAULT_EMAIL" "admin@admin.com"
     append_if_not_exist "$POSTGRES_ENV_FILE" "PGADMIN_DEFAULT_PASSWORD" "PLEASE_FILL"
 fi

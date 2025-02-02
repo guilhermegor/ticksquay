@@ -1,2 +1,2 @@
-cython==0.29.21; python_version >= "3.9" and python_version < "4.0"
-stpstone==0.1.2; python_version >= "3.9" and python_version < "4.0"
+cython==0.29.21; python_version >= "3.12" and python_version < "4.0"
+stpstone==1.0.3; python_version >= "3.12" and python_version < "4.0"

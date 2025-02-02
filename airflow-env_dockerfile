@@ -1,20 +1,18 @@
 FROM apache/airflow:2.10.4
 
-# environment variables
-ARG USER
+# define arguments and environment variables
+ARG _AIRFLOW_WWW_USER_USERNAME
 ARG AIRFLOW_UID
-ENV USER=${USER}
-ENV AIRFLOW_UID=${AIRFLOW_UID}
+ENV USER=${_AIRFLOW_WWW_USER_USERNAME:-airflow}
+ENV AIRFLOW_UID=${AIRFLOW_UID:-50000}
 
-# create the user and set permissions
-RUN useradd -m -u ${AIRFLOW_UID} -g root ${USER} && \
-    chown -R ${USER}:root /opt/airflow
-
-# changing user to root for system-level operations
+# changing to root user for systme-level operations
 USER root
 
-# copy requirements and change working directory
-COPY . /opt/airflow/.
+# copy files to the container and ensure ownership
+COPY --chown=${USER}:root . /opt/airflow/.
+
+# set working directory
 WORKDIR /opt/airflow
 
 
@@ -29,11 +27,20 @@ RUN bash ./shell/linux_setup.sh
 
 ### PYTHON DEPENDENCIES ###
 
+# changing user to ${USER} for application-level operations
+USER ${USER}
+
+# ensure file permissions are set correctly
+RUN chmod 755 ./shell/python_setup.sh
+
 # set the python_setup.sh file to be executable
-RUN chmod +x ./shell/python_setup.sh
+#   a+x: on windows-based docker setups file system quirks can prevent certain permissions from 
+#       being set correctly, especially when mounted from a windows host, so this is a workaround
+#       to work accross platforms
+RUN chmod a+x ./shell/python_setup.sh
 
 # execute the python_setup.sh
 RUN bash ./shell/python_setup.sh
 
-# changing user to ${USER} for application-level operations
-USER ${USER}
+# set the entrypoint to start a shell
+CMD ["/bin/bash"]

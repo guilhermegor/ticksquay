@@ -68,10 +68,21 @@ make --version
 (bash)
 
 # cached version
-mingw32-make test_airflow_env_build_run
+mingw32-make test_airflow_env_build_run_no_cache
 
 # no-cache version
-mingw32-make test_airflow_env_build_run_no_cache
+mingw32-make test_airflow_env_build_run
+```
+
+* Checking the grantness of super user creation in the corresponding apache airflow container
+
+```bash
+(bash)
+
+docker run --rm -it --user root apache/airflow:2.10.4 bash
+$ useradd -m -u 50000 -g root testuser
+# check user creation
+$ getent passwd 50000
 ```
 
 * Check packages installation in Airflow
@@ -80,17 +91,18 @@ mingw32-make test_airflow_env_build_run_no_cache
 (bash)
 
 # check python version, run the airflow-env container and check stpstone installation
-docker run -it airflow-env:1.0 bash
+docker exec -it airflow-env /bin/bash
 # python version
 $ python --version
 # verify the user
 $ whoami
 # check permissions
 $ touch /opt/airflow/test.txt
-# check stpstone installation, both in python and python3.9 - it is important to be referenced in 
-#   python 3.9 because is the environment variable that will be referenced by airflow docker compose
-$ python3.9 -c "import stpstone; print(dir(stpstone))"
+# check stpstone installation of stpstone
 $ python -c "import stpstone; print(dir(stpstone))"
+# check airflow installation
+which airflow
+airflow version
 
 # check stpstone installation in every airflow service
 #   ! docker_airflow_up_no_cache need to be runned previously
