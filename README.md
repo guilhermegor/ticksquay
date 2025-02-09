@@ -68,10 +68,10 @@ make --version
 (bash)
 
 # cached version
-mingw32-make test_airflow_env_build_run_no_cache
+mingw32-make test_airflow_env_build_no_cache
 
 # no-cache version
-mingw32-make test_airflow_env_build_run
+mingw32-make test_airflow_env_build
 ```
 
 * Checking the grantness of super user creation in the corresponding apache airflow container
@@ -79,19 +79,10 @@ mingw32-make test_airflow_env_build_run
 ```bash
 (bash)
 
-docker run --rm -it --user root apache/airflow:2.10.4 bash
+docker run --rm -it apache/airflow:2.10.4 bash
 $ useradd -m -u 50000 -g root testuser
 # check user creation
 $ getent passwd 50000
-```
-
-* Check packages installation in Airflow
-
-```bash
-(bash)
-
-# check python version, run the airflow-env container and check stpstone installation
-docker exec -it airflow-env /bin/bash
 # python version
 $ python --version
 # verify the user
@@ -103,11 +94,6 @@ $ python -c "import stpstone; print(dir(stpstone))"
 # check airflow installation
 which airflow
 airflow version
-
-# check stpstone installation in every airflow service
-#   ! docker_airflow_up_no_cache need to be runned previously
-mingw32-make docker_airflow_up_no_cache 
-mingw32-make test_airflow_packages_installation
 ```
 
 * Removing container and image:

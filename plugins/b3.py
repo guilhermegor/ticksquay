@@ -5,14 +5,12 @@ import os
 import sys
 from dotenv import load_dotenv
 from airflow.models.taskinstance import TaskInstance
+from stpstone.pool_conn.postgresql import PostgreSQLDB
+from stpstone.meta.validate_pm import ValidateAllMethodsMeta
 # project modules
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config.settings._global_slots import YAML_DBS
 from plugins.paths import PathFuncs
-# private modules
-sys.path.append(PathFuncs().root_py_dev)
-from stpstone.pool_conn.postgresql import PostgreSQLDB
-from stpstone.meta.validate_pm import ValidateAllMethodsMeta
 
 
 # venv

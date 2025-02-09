@@ -5,16 +5,12 @@ import os
 import sys
 from airflow.models.taskinstance import TaskInstance
 from typing import Any
-# project modules
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from config.settings._global_slots import YAML_USER_CFG
-from plugins.paths import PathFuncs
-# private modules
-sys.path.append(PathFuncs().root_py_dev)
 from stpstone.finance.b3.up2data_web import UP2DATAB3
 from stpstone.pool_conn.session import ReqSession
 from stpstone.meta.validate_pm import ValidateAllMethodsMeta
-
+# project modules
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config.settings._global_slots import YAML_USER_CFG
 
 class XCOMFuncs(metaclass=ValidateAllMethodsMeta):
 

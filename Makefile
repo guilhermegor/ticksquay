@@ -8,19 +8,15 @@ docker_rm_rmi_airflow_env:
 
 docker_airflow_up_no_cache: docker_rm_rmi_airflow_env
 	export DOCKER_BUILDKIT=1
-	docker build --no-cache -f airflow-env_dockerfile -t airflow-env:1.0 \
-		--build-arg _AIRFLOW_WWW_USER_USERNAME=$$(grep _AIRFLOW_WWW_USER_USERNAME airflow_mktdata.env | cut -d '=' -f2) \
-		--build-arg AIRFLOW_UID=$$(grep AIRFLOW_UID airflow_mktdata.env | cut -d '=' -f2) .
+	docker build --no-cache -f airflow-env_dockerfile -t airflow-env:1.0 .
 	docker compose --env-file data/postgres_mktdata.env -f data/postgres_docker-compose.yml up -d
-	docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d
+	docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d --no-deps --build airflow-webserver airflow-scheduler
 
 docker_airflow_up:
 	export DOCKER_BUILDKIT=1
-	docker build --debug -f airflow-env_dockerfile -t airflow-env:1.0 \
-		--build-arg _AIRFLOW_WWW_USER_USERNAME=$$(grep _AIRFLOW_WWW_USER_USERNAME airflow_mktdata.env | cut -d '=' -f2) \
-		--build-arg AIRFLOW_UID=$$(grep AIRFLOW_UID airflow_mktdata.env | cut -d '=' -f2) .
+	docker build --debug -f airflow-env_dockerfile -t airflow-env:1.0 .
 	docker compose --env-file data/postgres_mktdata.env -f data/postgres_docker-compose.yml up -d
-	docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d
+	docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d --no-deps --build airflow-webserver airflow-scheduler
 
 docker_airflow_down_no_cache: docker_rm_rmi_airflow_env
 	docker compose -f data/postgres_docker-compose.yml down -v --remove-orphans
@@ -46,22 +42,11 @@ docker_airflow_restart: docker_airflow_down docker_airflow_up
 # build/run docker custom image
 test_airflow_env_build_no_cache: docker_rm_rmi_airflow_env
 	export DOCKER_BUILDKIT=1
-	docker build --no-cache -f airflow-env_dockerfile -t airflow-env:1.0 \
-		--build-arg _AIRFLOW_WWW_USER_USERNAME=$$(grep _AIRFLOW_WWW_USER_USERNAME airflow_mktdata.env | cut -d '=' -f2) \
-		--build-arg AIRFLOW_UID=$$(grep AIRFLOW_UID airflow_mktdata.env | cut -d '=' -f2) .
+	docker build --no-cache -f airflow-env_dockerfile -t airflow-env:1.0 .
 
 test_airflow_env_build:
 	export DOCKER_BUILDKIT=1
-	docker build --debug -f airflow-env_dockerfile -t airflow-env:1.0 \
-		--build-arg _AIRFLOW_WWW_USER_USERNAME=$$(grep _AIRFLOW_WWW_USER_USERNAME airflow_mktdata.env | cut -d '=' -f2) \
-		--build-arg AIRFLOW_UID=$$(grep AIRFLOW_UID airflow_mktdata.env | cut -d '=' -f2) .
-
-# containers runned in foreground mode, in order to test environment
-test_airflow_env_build_run_no_cache: test_airflow_env_build_no_cache
-	docker run -it --name airflow-env airflow-env:1.0
-
-test_airflow_env_build_run: test_airflow_env_build
-	docker run -it --name airflow-env airflow-env:1.0
+	docker build --debug -f airflow-env_dockerfile -t airflow-env:1.0 .
 
 # packages
 test_airflow_packages_installation:
