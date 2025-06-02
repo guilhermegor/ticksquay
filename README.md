@@ -548,12 +548,11 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 🙏 Acknowledgments
 
-- **[stpstone Framework](https://github.com/guilhermegor/stpstone)** - Financial data processing inspiration
+- **[stpstone Framework](https://github.com/guilhermegor/stpstone)** - Financial data processing
 - **[PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)** - README template inspiration
 
 ## 📚 Additional Resources
 
-- **[Project Wiki](https://github.com/[your-repo]/wiki)** - Detailed documentation
 - **[Issue Tracker](https://github.com/[your-repo]/issues)** - Bug reports and feature requests
 - **[Discussions](https://github.com/[your-repo]/discussions)** - Community discussions
 - **[Changelog](CHANGELOG.md)** - Version history and updates
