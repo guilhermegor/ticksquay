@@ -1,4 +1,4 @@
-# ticksquay <img src="img/logo-2.jpg" align="right" width="200" style="border-radius: 15px;" alt="ticksquay">
+# ticksquay <img src="img/logo-3.jpg" align="right" width="200" style="border-radius: 15px;" alt="ticksquay">
 
 [![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 ![Docker Version](https://img.shields.io/badge/docker-v4.37.1+-blue.svg)
