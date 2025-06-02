@@ -52,6 +52,13 @@ test_airflow_packages_installation:
 check_docker:
 	./shell/docker_init.sh
 
+# git
+git_pull_force:
+	bash cli/git_pull_force.sh
+
+git_create_branch_from_main:
+	bash cli/git_create_branch_from_main.sh
+
 # github
 gh_status:
 	bash cli/gh_status.sh
