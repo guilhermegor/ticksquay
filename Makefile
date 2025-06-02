@@ -57,6 +57,10 @@ check_docker:
 	./shell/docker_init.sh
 
 # git
+precommit_update:
+	poetry run pre-commit install
+	poetry run pre-commit install --hook-type commit-msg
+
 git_pull_force:
 	bash cli/git_pull_force.sh
 

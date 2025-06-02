@@ -1,4 +1,4 @@
-# ticksquay <img src="img/logo-1.png" align="right" width="200" style="border-radius: 15px;" alt="stpstone">
+# ticksquay <img src="img/logo-2.jpg" align="right" width="200" style="border-radius: 15px;" alt="ticksquay">
 
 [![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 ![Docker Version](https://img.shields.io/badge/docker-v4.37.1+-blue.svg)
@@ -8,30 +8,7 @@
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)
 ![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-darkgreen.svg)
 
-Scalable ETL pipeline for collecting, transforming, and storing market data from Brazilian and North American financial markets**
-
----
-
-## 📋 Table of Contents
-
-- [Overview](#overview)
-- [Features](#features)
-- [Architecture](#architecture)
-- [Prerequisites](#prerequisites)
-- [Getting Started](#getting-started)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Running the Tests](#running-the-tests)
-- [Deployment](#deployment)
-- [Usage](#usage)
-- [Error Handling](#error-handling)
-- [Contributing](#contributing)
-- [Built With](#built-with)
-- [Authors](#authors)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
-
----
+Scalable ETL pipeline for collecting, transforming, and storing market data from Brazilian and North American financial markets
 
 ## 🎯 Overview
 
@@ -88,14 +65,14 @@ graph TB
     C --> D[Data Processing]
     D --> E[PostgreSQL Database]
     E --> F[pgAdmin Interface]
-    
+
     subgraph "Data Sources"
         A1[B3 Exchange]
         A2[OTC Markets]
         A3[Registry APIs]
         A4[Economic Data]
     end
-    
+
     subgraph "Processing Layer"
         C1[ETL Tasks]
         C2[Data Validation]
@@ -336,7 +313,7 @@ make docker_airflow_up
 
    **General Tab:**
    - Name: `Market Data DB`
-   
+
    **Connection Tab:**
    - Host: `postgres_container`
    - Port: `5432`
