@@ -1,24 +1,41 @@
-# Node.js
-node_modules/
-
-# Python
+# byte-compiled / cache
 __pycache__/
+*.py[cod]
+*$py.class
 *.pyc
 *.pyo
 *.pyd
+*.pytest_cache
+
+# pytest
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+
+# test coverage reports
+htmlcov/
+.coverage
+.cache
+
+# jupyter notebook checkpoints
+.ipynb_checkpoints/
 
 # IDEs
 .idea/
 
-# Operating System files
+# operating system files
 .DS_Store
 Thumbs.db
 
-# ENV
+# virutal environments
 *.env
-
-# VENV
-.venv
+*.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
 # logs
 logs/
@@ -27,4 +44,4 @@ logs/
 dist/
 build/
 *.egg-info/
-.pypirc
+*.pypirc
