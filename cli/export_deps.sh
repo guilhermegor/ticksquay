@@ -1,30 +1,30 @@
 #!/bin/bash
 set -eo pipefail
 
-# Configuration
+# configuration
 REQUIREMENTS_FILE="requirements-venv.txt"
 REQUIREMENTS_DEV_FILE="requirements-dev.txt"
 VSCODE_PREFIX="vscode:"
 
-# Function to handle errors
+# function to handle errors
 handle_error() {
     echo "Error: $1" >&2
     exit 1
 }
 
-# Check if poetry is available
+# check if poetry is available
 if ! command -v poetry &> /dev/null; then
     handle_error "poetry not found. Please install Poetry first."
 fi
 
-# Export main dependencies
+# export main dependencies
 echo "Exporting production dependencies to $REQUIREMENTS_FILE..."
 if ! poetry export -f requirements.txt --output "$REQUIREMENTS_FILE" --without-hashes; then
     echo "Warning: Failed to export with poetry, falling back to pip freeze" >&2
     pip freeze > "$REQUIREMENTS_FILE"
 fi
 
-# Export development dependencies (VSCode extensions)
+# export development dependencies (vscode extensions)
 if command -v code &> /dev/null; then
     echo "Exporting VSCode extensions to $REQUIREMENTS_DEV_FILE..."
     code --list-extensions | awk -v prefix="$VSCODE_PREFIX" '{print prefix $0}' > "$REQUIREMENTS_DEV_FILE"
@@ -33,7 +33,7 @@ else
     touch "$REQUIREMENTS_DEV_FILE"
 fi
 
-# Add to git if in a repository
+# add to git if in a repository
 if git rev-parse --is-inside-work-tree &> /dev/null; then
     git add "$REQUIREMENTS_FILE" "$REQUIREMENTS_DEV_FILE" || \
     echo "Warning: Failed to add files to git" >&2
