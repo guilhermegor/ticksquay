@@ -1,2 +1,1 @@
-stpstone==2.0.0
-python-dotenv==1.0.1
+poetry==2.1.2 ; python_full_version >= "3.12.8" and python_version < "3.14"

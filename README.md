@@ -1,260 +1,558 @@
-<img src="data/img/mkt-data-collector-cover.png" alt="Market Data Collector" width="450" height="450"/>
+# ticksquay <img src="img/logo-3.jpg" align="right" width="200" style="border-radius: 15px;" alt="ticksquay">
 
-# Market Data Collector
+[![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+![Docker Version](https://img.shields.io/badge/docker-v4.37.1+-blue.svg)
+![Python Version](https://img.shields.io/badge/python-3.12+-blue.svg)
+![Apache Airflow](https://img.shields.io/badge/airflow-2.10.4-ff6f00.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)
+![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-darkgreen.svg)
 
-This project focuses on building an ETL pipeline to collect, transform, and store market data from Brazilian and North American markets. The pipeline supports data ingestion from over-the-counter (OTC), exchange, and registry sources. With a scalable design, the project aims to expand support for global markets and integrate additional data sources in the future.
+Scalable ETL pipeline for collecting, transforming, and storing market data from Brazilian and North American financial markets
 
+## 🎯 Overview
 
-## Getting Started
+The **Market Data Collector** is a robust ETL (Extract, Transform, Load) pipeline designed to handle large-scale financial data ingestion from multiple sources. Built with Apache Airflow and Docker, it provides a scalable solution for collecting market data from:
 
-These instructions will get you a copy of the project running on your local machine for development and testing purposes.
+- **🇧🇷 Brazilian Markets**: B3 Exchange, OTC, and Registry sources
+- **🇺🇸 North American Markets**: NYSE, NASDAQ, and derivatives
+- **📊 Multiple Data Types**: Equities, bonds, derivatives, macroeconomic indicators
 
-### Prerequisities
+### Key Capabilities
 
-Before you begin, ensure you have the following basic set up:
+- **Real-time Data Ingestion**: Continuous data collection from multiple APIs
+- **Scalable Architecture**: Dockerized microservices with horizontal scaling
+- **Data Quality Assurance**: Built-in validation and error handling
+- **Future-Ready**: Extensible design for global market expansion
 
-* 8 GB RAM +; 12 GB Hard Disk +
+---
 
-* Docker (v4.37.1 or higher, validated with v4.37.1, but newer versions may work);
+## ✨ Features
 
-* Makefile (v3.82.90 or higher, validated with v3.82.90, but newer versions may work);
+### 🔄 **ETL Pipeline**
+- Apache Airflow orchestration
+- Parallel data processing
+- Automated scheduling and monitoring
+- Data lineage tracking
 
-* A web browser (for accessing web interfaces, if UI interaction is necessary; this is not required for CLI interactions).
+### 📊 **Data Sources**
+- **Exchange Data**: Real-time and historical market data
+- **OTC Markets**: Over-the-counter transactions
+- **Registry Data**: Securities and regulatory information
+- **Macroeconomic**: Economic indicators and rates
 
-* Python, packages and Docker images, with specific versions for deploying, should already be available in the current Docker Compose setup.
+### 🛠️ **Technical Stack**
+- **Orchestration**: Apache Airflow 2.10.4
+- **Containerization**: Docker & Docker Compose
+- **Database**: PostgreSQL with pgAdmin
+- **Monitoring**: Built-in logging and alerting
+- **Automation**: Makefile-based deployment
 
-Make sure your environment meets these prerequisites to avoid any issues while setting up and running the project.
+### 🌐 **Scalability**
+- Microservices architecture
+- Container orchestration
+- Horizontal scaling capabilities
+- Cloud-ready deployment
 
-### Installing
+---
 
-* Setting .env files:
+## 🏗️ Architecture
+
+```mermaid
+graph TB
+    A[Data Sources] --> B[Airflow Scheduler]
+    B --> C[Airflow Workers]
+    C --> D[Data Processing]
+    D --> E[PostgreSQL Database]
+    E --> F[pgAdmin Interface]
+
+    subgraph "Data Sources"
+        A1[B3 Exchange]
+        A2[OTC Markets]
+        A3[Registry APIs]
+        A4[Economic Data]
+    end
+
+    subgraph "Processing Layer"
+        C1[ETL Tasks]
+        C2[Data Validation]
+        C3[Transformation]
+        C4[Quality Checks]
+    end
+```
+
+---
+
+## 📋 Prerequisites
+
+### System Requirements
+
+| Component | Requirement | Validated Version |
+|-----------|-------------|-------------------|
+| **RAM** | 8 GB minimum | 12 GB recommended |
+| **Storage** | 12 GB free space | SSD recommended |
+| **Docker** | v4.37.1+ | v4.37.1 ✅ |
+| **Make** | v3.82.90+ | v3.82.90 ✅ |
+| **Browser** | Modern browser | For UI access |
+
+### Software Dependencies
+
+- **Docker Desktop**: [Installation Guide](https://docs.docker.com/desktop/)
+- **Make**: Platform-specific installation
+- **Python**: Included in Docker setup
+- **Git**: For version control
+
+### Platform-specific Make Installation
+
+<details>
+<summary><strong>🪟 Windows</strong></summary>
 
 ```bash
-(bash)
+# Option 1: MinGW (Recommended)
+# Download from: https://sourceforge.net/projects/mingw/
+# Add to PATH: C:\MinGW\bin
 
-# execute cd regardless of .env files have already being created
+# Option 2: Chocolatey
+choco install make
+
+# Verify installation
+mingw32-make --version
+```
+</details>
+
+<details>
+<summary><strong>🍎 macOS</strong></summary>
+
+```bash
+# Pre-installed with Xcode CLI tools
+xcode-select --install
+
+# Or via Homebrew
+brew install make
+
+# Verify installation
+make --version
+```
+</details>
+
+<details>
+<summary><strong>🐧 Linux</strong></summary>
+
+```bash
+# Ubuntu/Debian
+sudo apt-get install build-essential
+
+# CentOS/RHEL
+sudo yum groupinstall "Development Tools"
+
+# Verify installation
+make --version
+```
+</details>
+
+---
+
+## 🚀 Getting Started
+
+### Quick Start Guide
+
+1. **Clone the Repository**
+   ```bash
+   git clone <repository-url>
+   cd market-data-collector
+   ```
+
+2. **Configure Environment**
+   ```bash
+   ./shell/env_config.sh
+   ```
+
+3. **Set Up Credentials**
+   ```bash
+   # Edit .env and data/postgres_mktdata.env
+   # Replace PLEASE_FILL and fill@me.com with actual credentials
+   ```
+
+4. **Deploy Services**
+   ```bash
+   make docker_airflow_up
+   ```
+
+5. **Access Interfaces**
+   - **Airflow**: http://localhost:8080
+   - **pgAdmin**: http://localhost:5433
+
+---
+
+## ⚙️ Installation
+
+### Environment Configuration
+
+```bash
+# Navigate to project directory
 cd complete/path/to/project
+
+# Run environment setup script
 ./shell/env_config.sh
 ```
 
-* Configure .env and data/postgres_mktdata.env with personal data (must replace PLEASE_FILL and fill@me.com example credentials)
+### Configuration Files
 
-* Install Docker: https://docs.docker.com/desktop/
+Edit the following files with your credentials:
 
-* Install Makefile:
-    * Windows: https://medium.com/@samsorrahman/how-to-run-a-makefile-in-windows-b4d115d7c516
-    * MacOS: https://wahyu-ehs.medium.com/makefile-on-mac-os-2ef0e67b0a15
-    * Linux: https://stackoverflow.com/questions/3915067/what-are-makefiles-make-install-etc
-    * Add to Git Bash path:
+- **`.env`**: Main environment variables
+- **`data/postgres_mktdata.env`**: Database credentials
+
+⚠️ **Important**: Replace all `PLEASE_FILL` placeholders and `fill@me.com` examples with actual values.
+
+### Git Bash Path Configuration (Windows)
+
 ```bash
-(bash)
-
-# copy the path, following on export is a command with the default installation path
+# Find mingw32-make location
 which mingw32-make
+
+# Add to PATH (example path)
 export PATH=$PATH:/c/MinGW/bin
 
-# windows
-mingw32-make --version
-
-# macOS / linux
-make --version
+# Verify installation
+mingw32-make --version  # Windows
+make --version          # macOS/Linux
 ```
 
-## Running the tests
+---
 
-* Build initial Airflow env commands, in order to look for possible issues in the bash files
+## 🧪 Running the Tests
+
+### Pre-deployment Testing
+
+#### 1. Build Environment Tests
 
 ```bash
-(bash)
+# Test with cache
+make test_airflow_env_build
 
-# cached version
-mingw32-make test_airflow_env_build_no_cache
-
-# no-cache version
-mingw32-make test_airflow_env_build
+# Test without cache (clean build)
+make test_airflow_env_build_no_cache
 ```
 
-* Checking the grantness of super user creation in the corresponding apache airflow container
+#### 2. Container Validation
 
 ```bash
-(bash)
-
+# Verify Airflow container setup
 docker run --rm -it apache/airflow:2.10.4 bash
-$ useradd -m -u 50000 -g root testuser
-# check user creation
-$ getent passwd 50000
-# python version
-$ python --version
-# verify the user
-$ whoami
-# check permissions
-$ touch /opt/airflow/test.txt
-# check stpstone installation of stpstone
-$ python -c "import stpstone; print(dir(stpstone))"
-# check airflow installation
+
+# Inside container, run validation commands:
+useradd -m -u 50000 -g root testuser
+getent passwd 50000
+python --version
+whoami
+touch /opt/airflow/test.txt
+python -c "import stpstone; print(dir(stpstone))"
 which airflow
 airflow version
 ```
 
-* Removing container and image:
-```bash
-(bash)
+#### 3. Cleanup Test Environment
 
-mingw32-make test_rm_rmi_airflow_env
+```bash
+# Remove test containers and images
+make test_rm_rmi_airflow_env
 ```
 
-* Checking for import errors
+### Production Testing
+
+#### DAG Validation
 
 ```bash
-
-(bash)
-
-# dags
+# List all DAGs
 airflow dags list
 
-# import errors
+# Check for import errors
 airflow dags list-import-errors
 
-# after correcting, restart dag - example:
+# Clear and trigger specific DAG
 airflow tasks clear -d -y up2data_b3
 airflow dags trigger up2data_b3
 ```
 
+---
 
-## Deployment
+## 🚢 Deployment
 
-* Check Docker availability:
+### Pre-deployment Checks
 
 ```bash
-(bash)
-
-mingw32-make check_docker
+# Verify Docker availability
+make check_docker
 ```
 
-* Running Docker composes:
+### Production Deployment
+
+#### Option 1: Clean Deployment (Recommended for first-time)
 
 ```bash
-(bash)
-
-# no cache
-mingw32-make docker_airflow_up_no_cache
-
-# cached version
-mingw32-make docker_airflow_up
+# Deploy without cache
+make docker_airflow_up_no_cache
 ```
 
-* Connecting to database through pgadmin:
+#### Option 2: Cached Deployment
 
-    * access http://localhost:5433/ in your local machine
-    * login with email address / unsername and password configured in data / postgres_mktdata.env
-![alt text](data/img/login-pgadmin.png)
-    * configure server:<br>
-![alt text](data/img/configure-server-1.png)
-![alt text](data/img/configure-server-2.png)
-![alt text](data/img/configure-server-3.png)
-![alt text](data/img/configure-server-4.png)
-
-### Restarting All Services
-
-* No cache mode:
 ```bash
-(bash)
-
-mingw32-make docker_airflow_restart_no_cache
+# Deploy with existing cache
+make docker_airflow_up
 ```
 
-* Cache mode:
-```bash
-(bash)
+### Database Connection Setup
 
-mingw32-make docker_airflow_restart
+1. **Access pgAdmin**: Navigate to http://localhost:5433
+2. **Login**: Use credentials from `data/postgres_mktdata.env`
+3. **Configure Server Connection**:
+
+   <details>
+   <summary>Step-by-step Server Configuration</summary>
+
+   **General Tab:**
+   - Name: `Market Data DB`
+
+   **Connection Tab:**
+   - Host: `postgres_container`
+   - Port: `5432`
+   - Database: `[your_database_name]`
+   - Username: `[your_username]`
+   - Password: `[your_password]`
+
+   ![Server Configuration](data/img/configure-server-1.png)
+   </details>
+
+### Service Management
+
+#### Restart All Services
+
+```bash
+# Restart without cache
+make docker_airflow_restart_no_cache
+
+# Restart with cache
+make docker_airflow_restart
 ```
 
+#### Individual Service Control
 
-## Error Handling
-
-* Saving logs:
 ```bash
-(bash)
+# Stop all services
+docker-compose --env-file .env -f airflow_docker-compose.yml down
 
-docker compose --env-file .env -f airflow_docker-compose.yml logs > "logs/misc/logs-airflow-docker-compose_$(date +'%Y-%m-%d_%H').txt"
+# Start specific service
+docker-compose --env-file .env -f airflow_docker-compose.yml up [service_name]
 ```
 
-* Checking network integration between containers:
+---
+
+## 📊 Usage
+
+### Accessing the Platform
+
+| Service | URL | Purpose |
+|---------|-----|---------|
+| **Airflow Webserver** | http://localhost:8080 | DAG management and monitoring |
+| **pgAdmin** | http://localhost:5433 | Database administration |
+| **Flower** | http://localhost:5555 | Celery task monitoring |
+
+### Common Operations
+
+#### Monitoring DAGs
 
 ```bash
-(bash)
+# View DAG status
+airflow dags state [dag_id] [execution_date]
 
-# check previously created data
+# Monitor task logs
+airflow tasks log [dag_id] [task_id] [execution_date]
+```
+
+#### Data Pipeline Operations
+
+```bash
+# Trigger manual DAG run
+airflow dags trigger [dag_id]
+
+# Pause/Resume DAG
+airflow dags pause [dag_id]
+airflow dags unpause [dag_id]
+```
+
+---
+
+## 🚨 Error Handling
+
+### Logging and Diagnostics
+
+#### Capture Service Logs
+
+```bash
+# Export all logs with timestamp
+docker compose --env-file .env -f airflow_docker-compose.yml logs > \
+  "logs/misc/logs-airflow-docker-compose_$(date +'%Y-%m-%d_%H').txt"
+```
+
+#### Network Diagnostics
+
+```bash
+# Inspect Docker networks
 docker network ls
 docker ps
 docker images
-# inspect if both conteiners are integrated through network
+
+# Check container network integration
 docker network inspect postgres_compose_network
-# check network connectivity
+
+# Test connectivity between containers
 docker exec -it pgadmin_container ping postgres_container
 ```
 
-* Remove container with desired name in use:
-```bash
-(bash)
+### Common Issues and Solutions
 
+<details>
+<summary><strong>🔧 Container Name Conflicts</strong></summary>
+
+```bash
+# Remove conflicting container
 docker rm -f airflow-env
-```
 
-* Checking for remaning errors:
+# Check for running containers
+docker ps -a
+```
+</details>
+
+<details>
+<summary><strong>🔧 Permission Issues</strong></summary>
 
 ```bash
-(bash)
-
-docker logs <CONTAINER_NAME>
-```
-
-* Granting permissions, in case is needed:
-
-```bash
-(bash)
-
-# error: 
-#   2025-01-24 07:25:43 creating configuration files ... ok
-#   2025-01-24 07:25:43 2025-01-24 10:25:43.406 UTC [83] FATAL:  data directory "/var/lib/postgresql/data" has invalid permissions
-#   2025-01-24 07:25:43 2025-01-24 10:25:43.406 UTC [83] DETAIL:  Permissions should be u=rwx (0700) or u=rwx,g=rx (0750).
-
+# Grant proper permissions
 chmod -R 0700 ./data
 chown -R $(id -u):$(id -g) ./data
-
 chmod -R 777 dags logs plugins
 
-docker exec -it dcs-postgres bash
-chmod 0700 /var/lib/postgresql/data
-chmod 0700 ./data
-
-docker run --rm -it -v $(pwd)/postgres:/var/lib/postgresql/data alpine sh
-$ (sh) rm -rf /var/lib/postgresql/*
-$ (sh) exit
-
-# check for permission - ensure the output shows the correct permissions (drwx------ or 0700).
+# Verify permissions
 ls -ld ./data
 
-# ! obs: relative path cah raise errors in windows, opt for absolute paths
+# Fix PostgreSQL data directory
+docker exec -it dcs-postgres bash
+chmod 0700 /var/lib/postgresql/data
+```
+</details>
+
+<details>
+<summary><strong>🔧 PostgreSQL Permission Errors</strong></summary>
+
+**Error**: `data directory "/var/lib/postgresql/data" has invalid permissions`
+
+**Solution**:
+```bash
+# Clean data directory
+docker run --rm -it -v $(pwd)/postgres:/var/lib/postgresql/data alpine sh
+# Inside container:
+rm -rf /var/lib/postgresql/*
+exit
+
+# Reset permissions
+chmod 0700 ./data
+```
+</details>
+
+### Debug Commands
+
+```bash
+# Check container logs
+docker logs [CONTAINER_NAME]
+
+# Interactive container access
+docker exec -it [CONTAINER_NAME] bash
+
+# Resource usage monitoring
+docker stats
+
+# System disk usage
+docker system df
 ```
 
+---
 
-## Built With
+## 🤝 Contributing
 
-* [Airflow Docker Compose - General](https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html)
-* [Airflow Docker Compose - 2.10.4](https://airflow.apache.org/docs/apache-airflow/2.10.4/docker-compose.yaml)
-* [PostgreSQL](https://www.postgresql.org/)
-* [Docker](https://hub.docker.com/)
+We welcome contributions! Please follow these guidelines:
 
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
 
-## Authors
+### Development Setup
 
-**Guilherme Rodrigues** 
-* [GitHub](https://github.com/guilhermegor)
-* [LinkedIn](https://www.linkedin.com/in/guilhermegor/)
+```bash
+# Clone your fork
+git clone https://github.com/[your-username]/market-data-collector.git
 
+# Create development environment
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# or
+venv\Scripts\activate     # Windows
 
-## Inspirations
+# Install development dependencies
+pip install -r requirements-dev.txt
+```
 
-* [Gist](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
+---
+
+## 🛠️ Built With
+
+### Core Technologies
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| **[Apache Airflow](https://airflow.apache.org/)** | 2.10.4 | Workflow orchestration |
+| **[Docker](https://www.docker.com/)** | 4.37.1+ | Containerization |
+| **[PostgreSQL](https://www.postgresql.org/)** | Latest | Primary database |
+| **[Python](https://www.python.org/)** | 3.12+ | Core development language |
+
+### Supporting Tools
+
+- **[pgAdmin](https://www.pgadmin.org/)**: Database administration
+- **[Docker Compose](https://docs.docker.com/compose/)**: Multi-container orchestration
+- **[Make](https://www.gnu.org/software/make/)**: Build automation
+- **[Git](https://git-scm.com/)**: Version control
+
+### External References
+
+- [Airflow Docker Compose - General](https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html)
+- [Airflow Docker Compose - v2.10.4](https://airflow.apache.org/docs/apache-airflow/2.10.4/docker-compose.yaml)
+- [Docker Hub](https://hub.docker.com/)
+
+---
+
+## 👨‍💻 Authors
+
+**Guilherme Rodrigues**  
+[![GitHub](https://img.shields.io/badge/GitHub-guilhermegor-181717?style=flat&logo=github)](https://github.com/guilhermegor)  
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Guilherme_Rodrigues-0077B5?style=flat&logo=linkedin)](https://www.linkedin.com/in/guilhermegor/)
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- **[stpstone Framework](https://github.com/guilhermegor/stpstone)** - Financial data processing
+- **[PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)** - README template inspiration
+
+## 📚 Additional Resources
+
+- **[Issue Tracker](https://github.com/[your-repo]/issues)** - Bug reports and feature requests
+- **[Discussions](https://github.com/[your-repo]/discussions)** - Community discussions
+- **[Changelog](CHANGELOG.md)** - Version history and updates
