@@ -1,5 +1,9 @@
 .DEFAULT_GOAL:= docker_airflow_up_no_cache
 
+# project
+bump_version:
+	bash cli/bump_version.sh
+
 # docker
 docker_rm_rmi_airflow_env:
 	@docker ps -a --filter "name=airflow-env" -q | grep -q . && docker rm airflow-env || true

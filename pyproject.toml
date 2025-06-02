@@ -1,13 +1,55 @@
 [tool.poetry]
-name = "mktdata-collector"
-version = "0.1.0"
-description = ""
+name = "ticksquay"
+version = "1.0.0"
+description = "Solution for collecting and managing OTC, exchange, and registry market data, focusing on Brazilian and North American markets, with a scalable design for global expansion. Ideal for analysis and research. "
 authors = ["Guilherme Rodrigues <55053188+guilhermegor@users.noreply.github.com>"]
 readme = "README.md"
+license = "MIT"
+homepage = "https://github.com/guilhermegor/ticksquay"
+repository = "https://github.com/guilhermegor/ticksquay"
+keywords = [
+    "python",
+    "financial",
+    "data",
+    "ingestion",
+    "b3",
+    "cvm",
+    "exchange",
+    "portfolio",
+    "fixed income",
+    "options",
+    "futures",
+    "market data",
+    "macroeconomic",
+    "scraping",
+    "statistics",
+    "time series",
+    "cryptocurrency",
+    "brazilian markets"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Intended Audience :: Science/Research",
+    "Topic :: Office/Business :: Financial",
+    "Topic :: Office/Business :: Financial :: Spreadsheet",
+    "Topic :: Office/Business :: Office Suites",
+    "Topic :: Office/Business :: Scheduling",
+    "Topic :: Other/Nonlisted Topic",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+
+[tool.poetry.urls]
+"Bug Reports" = "https://github.com/guilhermegor/ticksquay/issues"
+"Source" = "https://github.com/guilhermegor/ticksquay"
 
 [tool.poetry.dependencies]
-python = "^3.12.8"
-stpstone = "1.0.1"
+python = ">=3.12.8,<3.14"
+stpstone = "2.0.8"
 python-dotenv = "1.0.1"
 
 
