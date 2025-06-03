@@ -1,16 +1,6 @@
 FROM apache/airflow:slim-3.0.1-python3.12
 
-COPY requirements.txt .
+COPY . .
+
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
-
-COPY pyproject.toml poetry.lock* ./
-
-RUN poetry config virtualenvs.create true \
-    && poetry config virtualenvs.in-project false \
-    && poetry config virtualenvs.path /opt/venv \
-    && poetry install --no-interaction --no-ansi --only main
-
-ENV PATH="/opt/venv/bin:$PATH"
-
-COPY . .
