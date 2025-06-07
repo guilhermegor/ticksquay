@@ -1,17 +1,17 @@
 -- check if the mktdata_collector database exists, and create it if necessary
-SELECT 'Creating mktdata_collector database' 
+SELECT 'Creating mktdata_collector database'
 WHERE NOT EXISTS (SELECT 1 FROM pg_catalog.pg_database WHERE datname = 'mktdata_collector');
 
 -- create the database only if it does not exist
-CREATE DATABASE mktdata_collector 
-WITH 
+CREATE DATABASE mktdata_collector
+WITH
     TEMPLATE = template0
     ENCODING = 'UTF8'
     LOCALE_PROVIDER = icu
     ICU_LOCALE = 'pt-BR';
 
 -- listing available databases
-DO $$ 
+DO $$
 DECLARE
     rec RECORD;
 BEGIN
@@ -26,19 +26,19 @@ END $$;
 -- \connect mktdata_collector;
 
 -- check if the registries_collector database exists, and create it if necessary
-SELECT 'Creating registries_collector database' 
+SELECT 'Creating registries_collector database'
 WHERE NOT EXISTS (SELECT 1 FROM pg_catalog.pg_database WHERE datname = 'registries_collector');
 
 -- create the database only if it does not exist
-CREATE DATABASE registries_collector 
-WITH 
+CREATE DATABASE registries_collector
+WITH
     TEMPLATE = template0
     ENCODING = 'UTF8'
     LOCALE_PROVIDER = icu
     ICU_LOCALE = 'pt-BR';
 
 -- listing available databases
-DO $$ 
+DO $$
 DECLARE
     rec RECORD;
 BEGIN

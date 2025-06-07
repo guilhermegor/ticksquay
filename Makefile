@@ -12,17 +12,17 @@ docker_rm_rmi_airflow_env:
 docker_airflow_up_no_cache: docker_rm_rmi_airflow_env
 	export DOCKER_BUILDKIT=1
 	docker build --no-cache -f airflow-env_dockerfile -t airflow-env:1.0 .
-	docker compose --env-file data/postgres_mktdata.env -f data/postgres_docker-compose.yml up -d
+	docker compose --env-file data/postgres_mktdata.env -f postgres_docker-compose.yml up -d
 	docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d --no-deps --build airflow-webserver airflow-scheduler
 
 docker_airflow_up:
 	export DOCKER_BUILDKIT=1
 	docker build --debug -f airflow-env_dockerfile -t airflow-env:1.0 .
-	docker compose --env-file data/postgres_mktdata.env -f data/postgres_docker-compose.yml up -d
+	docker compose --env-file data/postgres_mktdata.env -f postgres_docker-compose.yml up -d
 	docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d --no-deps --build airflow-webserver airflow-scheduler
 
 docker_airflow_down_no_cache: docker_rm_rmi_airflow_env
-	docker compose -f data/postgres_docker-compose.yml down -v --remove-orphans
+	docker compose -f postgres_docker-compose.yml down -v --remove-orphans
 	docker compose -f airflow_docker-compose.yml down -v --remove-orphans
 	docker system prune --volumes --force
 	docker network prune -f
@@ -31,7 +31,7 @@ docker_airflow_down_no_cache: docker_rm_rmi_airflow_env
 	docker image prune -a --force
 
 docker_airflow_down:
-	docker compose -f data/postgres_docker-compose.yml down
+	docker compose -f postgres_docker-compose.yml down
 	docker compose -f airflow_docker-compose.yml down
 	docker rm -f airflow-env:1.0
 

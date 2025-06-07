@@ -4,7 +4,7 @@
 -- create the table B3_INSTRM_REG if it doesn't exist
 DO $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM information_schema.tables 
+    IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'RAW' AND table_name = 'B3_INSTRM_REG') THEN
         EXECUTE '
             CREATE TABLE RAW.B3_INSTRM_REG (
@@ -81,7 +81,7 @@ END $$;
 -- create index on TCKR_SYMB if it doesn't exist
 DO $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_indexes 
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes
                    WHERE schemaname = 'RAW' AND indexname = 'idx_tckrsymb') THEN
         CREATE INDEX idx_tckrsymb ON RAW.B3_INSTRM_REG (TCKR_SYMB);
     END IF;

@@ -2,7 +2,7 @@
 \connect mktdata_collector;
 
 -- create the RAW schema if it doesn't exist
-DO $$ 
+DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.schemata WHERE schema_name = 'RAW') THEN
         EXECUTE 'CREATE SCHEMA RAW';
@@ -10,7 +10,7 @@ BEGIN
 END $$;
 
 -- create the CLEANED schema if it doesn't exist
-DO $$ 
+DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.schemata WHERE schema_name = 'CLEANED') THEN
         EXECUTE 'CREATE SCHEMA CLEANED';
@@ -18,7 +18,7 @@ BEGIN
 END $$;
 
 -- create the CURATED schema if it doesn't exist
-DO $$ 
+DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.schemata WHERE schema_name = 'CURATED') THEN
         EXECUTE 'CREATE SCHEMA CURATED';
@@ -29,7 +29,7 @@ END $$;
 \connect registries_collector;
 
 -- create the RAW schema if it doesn't exist
-DO $$ 
+DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.schemata WHERE schema_name = 'RAW') THEN
         EXECUTE 'CREATE SCHEMA RAW';
@@ -37,7 +37,7 @@ BEGIN
 END $$;
 
 -- create the CLEANED schema if it doesn't exist
-DO $$ 
+DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.schemata WHERE schema_name = 'CLEANED') THEN
         EXECUTE 'CREATE SCHEMA CLEANED';
@@ -45,10 +45,9 @@ BEGIN
 END $$;
 
 -- create the CURATED schema if it doesn't exist
-DO $$ 
+DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.schemata WHERE schema_name = 'CURATED') THEN
         EXECUTE 'CREATE SCHEMA CURATED';
     END IF;
 END $$;
-

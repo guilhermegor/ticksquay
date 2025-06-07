@@ -8,14 +8,14 @@ services:
     #   - 0700: owner, the postgres user in this case - full permission
     #   - full permission: read, write, execute
     #   - /var/lib/postgresql/data: default directory where postgres stores its data
-    command: > 
+    command: >
       bash -c "chmod -R 0700 /var/lib/postgresql/data &&docker-entrypoint.sh postgres"
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - PGDATA=/var/lib/postgresql/data
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - /mnt/sdc/postgresql_data:/var/lib/postgresql/data
       - ./bootstrap:/docker-entrypoint-initdb.d:rw
     ports:
       - "5432:5432"
