@@ -1,13 +1,9 @@
-# configuration panel
-conf_panel:
-  bl_use_timer: False
-
 default_args_airflow:
   owner: guilhermegor
   # run task regardless of previous tasks success/failure
   depends_on_past: False
   # email addresses for notification
-  email: {{list_emails_address}}
+  email:
   # send email if task fails
   email_on_failure: True
   # send email if task is retried
@@ -22,8 +18,8 @@ default_args_airflow:
   backoff_factor: 1
   # maximum retry delay
   max_retry_delay: 1 day
-  start_date: {{start_date}}
-  end_date: {{end_date}}
+  start_date:
+  end_date:
   # check cron scheduler at: https://crontab.guru/
   schedule_interval: '@daily'
   timezone: UTC
@@ -43,7 +39,3 @@ default_args_airflow:
   sla_miss_callback: null
   # whether to notify when SLA is missed
   sla_notified: False
-
-up2data_b3:
-  wd_bef_inf: 2
-  wd_bef_sup: 1

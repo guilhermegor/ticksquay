@@ -10,10 +10,10 @@ keys:
 rotina:
   titulo: TITULO
   mensagem: >
-    ROTINA: {} 
-    \n \n \t - Executadado em: {}. 
-    \n \n \t - Máquina do operador: {} 
-    \n \n \t - Sigla operador: {} 
-    \n \n \t - Evidências disponíveis em: {} 
+    ROTINA: {}
+    \n \n \t - Executadado em: {}.
+    \n \n \t - Máquina do operador: {}
+    \n \n \t - Sigla operador: {}
+    \n \n \t - Evidências disponíveis em: {}
     \n \n \t - Logs disponíveis em: {} \n \n \t Abs,
   bl_debug_mode: False

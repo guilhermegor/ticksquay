@@ -259,22 +259,6 @@ airflow version
 make test_rm_rmi_airflow_env
 ```
 
-### Production Testing
-
-#### DAG Validation
-
-```bash
-# List all DAGs
-airflow dags list
-
-# Check for import errors
-airflow dags list-import-errors
-
-# Clear and trigger specific DAG
-airflow tasks clear -d -y up2data_b3
-airflow dags trigger up2data_b3
-```
-
 ---
 
 ## 🚢 Deployment
