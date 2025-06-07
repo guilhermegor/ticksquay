@@ -31,6 +31,7 @@ load_dotenv(path_env)
     ),
 )
 def irsbr_records_dag() -> None:  # noqa: C901
+    # ! noqa C901 (DAG workflow needs all tasks in one place)
     """Define workflow for IRSBR records data ingestion."""
 
     @task(task_id="class_")
