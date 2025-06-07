@@ -106,15 +106,12 @@ def irsbr_records_dag() -> None:  # noqa: C901
     ncea_instance = ncea(cls_instance)
     registration_status_instance = registration_status(cls_instance)
 
-    cls_instance >> companies_instance >> businesses_instance
-    businesses_instance >> simplified_taxation_system_instance
-    simplified_taxation_system_instance >> shareholders_instance
-    shareholders_instance >> countries_instance
-    countries_instance >> cities_instance
-    cities_instance >> shareholders_education_instance
-    shareholders_education_instance >> legal_form_instance
-    legal_form_instance >> ncea_instance
-    ncea_instance >> registration_status_instance
+    cls_instance >> companies_instance >> businesses_instance \
+        >> simplified_taxation_system_instance >> shareholders_instance \
+        >> countries_instance >> cities_instance \
+        >> shareholders_education_instance \
+        >> legal_form_instance >> ncea_instance \
+        >> registration_status_instance
 
 
 dag = irsbr_records_dag()
