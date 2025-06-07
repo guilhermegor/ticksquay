@@ -48,13 +48,16 @@ classifiers = [
 "Source" = "https://github.com/guilhermegor/ticksquay"
 
 [tool.poetry.dependencies]
-python = ">=3.12.8,<3.14"
-stpstone = "2.0.8"
+python = "~3.12.8"
+stpstone = "2.0.9"
 python-dotenv = "1.0.1"
+apache-airflow = ">=3.0.0,<3.1.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "4.2.0"
 poetry-plugin-export = "^1.9.0"
+flake8 = "7.2.0"
+setuptools = "80.9.0"
 
 [build-system]
 requires = ["poetry-core"]
