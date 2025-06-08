@@ -25,7 +25,8 @@ END $$;
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.table_constraints
-                   WHERE constraint_schema = 'raw' AND constraint_name = 'pk_br_irs_companies_cnpj') THEN
+                   WHERE constraint_schema = 'raw'
+                   AND constraint_name = 'pk_br_irs_companies_cnpj') THEN
         EXECUTE '
             ALTER TABLE raw.br_irs_companies
             ADD CONSTRAINT pk_br_irs_companies_cnpj PRIMARY KEY (CNPJ);
@@ -36,7 +37,8 @@ END $$;
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_indexes
-                   WHERE schemaname = 'raw' AND indexname = 'idx_br_irs_companies_cnpj') THEN
+                   WHERE schemaname = 'raw'
+                   AND indexname = 'idx_br_irs_companies_cnpj') THEN
         EXECUTE '
             CREATE INDEX idx_br_irs_companies_cnpj ON raw.br_irs_companies (CNPJ);
         ';
@@ -104,7 +106,8 @@ END $$;
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.table_constraints
-                   WHERE constraint_schema = 'raw' AND constraint_name = 'pk_br_irs_businesses_ein') THEN
+                   WHERE constraint_schema = 'raw'
+                   AND constraint_name = 'pk_br_irs_businesses_ein') THEN
         EXECUTE '
             ALTER TABLE raw.br_irs_businesses
             ADD CONSTRAINT pk_br_irs_businesses_ein
