@@ -3,7 +3,6 @@
   // GENERAL EDITOR SETTINGS
   // =============================================
   "editor.formatOnSave": true,
-  "editor.quickSuggestions": null,
   "editor.minimap.enabled": false,
   "editor.bracketPairColorization.enabled": true,
   "editor.codeActionsOnSave": {
@@ -54,7 +53,7 @@
   // WORKBENCH APPEARANCE
   // =============================================
   "workbench.iconTheme": "material-icon-theme",
-  "workbench.colorTheme": "Color Identifiers Dark",
+  "workbench.colorTheme": "Default Dark Modern",
   "workbench.colorCustomizations": {
     "editorRuler.foreground": "#D3D3D3"
   },

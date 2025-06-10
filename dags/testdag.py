@@ -27,17 +27,27 @@ DEFAULT_ARGS = {
     default_args=DEFAULT_ARGS,
 )
 def pure_decorator_dag() -> Any:
-    """Define workflow using only task decorators.
+    """Define a simple DAG using only decorators.
 
-    Returns:
-        The DAG object.
+    This DAG demonstrates how to use Airflow's task decorators to create a workflow
+    without relying on traditional operator syntax. It includes three tasks:
+    - `start_task`: A dummy task that simulates the start of a workflow.
+    - `hello_task`: A task that prints a hello message.
+    - `end_task`: A dummy task that simulates the end of a workflow.
+    Notes
+    -----
+    - This DAG is a simple example to illustrate the use of decorators in Airflow.
+    - It does not perform any complex operations or data processing.
     """
+
     @task(task_id="start_task")
     def start() -> str:
         """Execute dummy start task.
 
-        Returns:
-            A string indicating the task completed.
+        Returns
+        -------
+        str
+            Starting message
         """
         print("Starting workflow")
         return "start"
@@ -46,8 +56,10 @@ def pure_decorator_dag() -> Any:
     def print_hello() -> str:
         """Print hello message.
 
-        Returns:
-            The hello message string.
+        Returns
+        -------
+        str
+            Printed message
         """
         print("Hello, Airflow!")
         return "Hello, Airflow!"
@@ -56,8 +68,10 @@ def pure_decorator_dag() -> Any:
     def end() -> str:
         """Execute dummy end task.
 
-        Returns:
-            A string indicating the task completed.
+        Returns
+        -------
+        str
+            Completion message
         """
         print("Workflow completed")
         return "end"
