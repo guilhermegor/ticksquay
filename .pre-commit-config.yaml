@@ -41,12 +41,17 @@ repos:
           - darglint==1.8.1
           - flake8-bugbear==24.12.12
           - flake8-eradicate==1.5.0
+          - radon==6.0.1
         args:
           # vulture
           - --min-confidence=90
           # darglint
           - --darglint-strictness=full
           - --darglint-style=numpy
+          # radon complexity threshold
+          - --radon-max-cc=10
+          - --radon-no-assert
+          - --radon-show-closures
           # general flake8
           - --max-line-length=99
           - --max-complexity=10
