@@ -30,7 +30,7 @@ load_dotenv(path_env)
         },
     ),
 )
-def irsbr_records_dag() -> None:  # noqa: C901
+def irsbr_records_dag() -> None:  # noqa: C901 (function is too complex)
     """Define workflow for IRSBR records data ingestion.
 
     This DAG orchestrates the ingestion of IRS BR (Brazilian tax system) records
