@@ -31,73 +31,145 @@ load_dotenv(path_env)
     ),
 )
 def irsbr_records_dag() -> None:  # noqa: C901
-    # C901: function is too complex (DAG workflow needs all tasks in one place)
-    """Define workflow for IRSBR records data ingestion."""
+    """Define workflow for IRSBR records data ingestion.
+
+    This DAG orchestrates the ingestion of IRS BR (Brazilian tax system) records
+    into a PostgreSQL database. It handles multiple data categories including
+    companies, businesses, shareholders, and tax-related metadata.
+
+    Notes
+    -----
+    - The DAG runs daily and does not backfill missed executions (`catchup=False`).
+    - All tasks are sequential, with dependencies explicitly defined.
+    - Email alerts are configured via `LIST_EMAILS_ADDRESSES` in the environment.
+    """
 
     @task(task_id="class_")
     def class_() -> IRSBR:
-        """Return an instance of the IRSBR class.
+        """Initialize and return an IRSBR instance for data ingestion.
 
-        Returns:
-            IRSBR: An instance of the IRSBR class.
+        Returns
+        -------
+        IRSBR
+            Configured instance of the IRSBR class with database connection.
         """
         return IRSBR(session=None, cls_db=CLS_POSTGRESQL_RAW)
 
     @task(task_id="companies")
     def companies(cls_: IRSBR) -> None:
-        """Insert IRS BR data for companies."""
+        """Ingest company data from IRS BR.
+
+        Parameters
+        ----------
+        cls_ : IRSBR
+            IRSBR instance with database connection and ingestion methods.
+        """
         _ = cls_.source("companies", bl_fetch=False)
 
     @task(task_id="businesses")
     def businesses(cls_: IRSBR) -> None:
-        """Insert IRS BR data for businesses."""
+        """Ingest business entity data from IRS BR.
+
+        Parameters
+        ----------
+        cls_ : IRSBR
+            IRSBR instance with database connection and ingestion methods.
+        """
         cls_.source("businesses", bl_fetch=False)
 
     @task(task_id="simplified_taxation_system")
     def simplified_taxation_system(cls_: IRSBR) -> None:
-        """Insert IRS BR data for simplified taxation system."""
+        """Ingest simplified taxation system records.
+
+        Parameters
+        ----------
+        cls_ : IRSBR
+            IRSBR instance with database connection and ingestion methods.
+        """
         cls_.source("simplified_taxation_system", bl_fetch=False)
 
     @task(task_id="shareholders")
     def shareholders(cls_: IRSBR) -> None:
-        """Insert IRS BR data for shareholders."""
+        """Ingest shareholder information from IRS BR.
+
+        Parameters
+        ----------
+        cls_ : IRSBR
+            IRSBR instance with database connection and ingestion methods.
+        """
         cls_.source("shareholders", bl_fetch=False)
 
     @task(task_id="countries")
     def countries(cls_: IRSBR) -> None:
-        """Insert IRS BR data for countries."""
+        """Ingest country reference data from IRS BR.
+
+        Parameters
+        ----------
+        cls_ : IRSBR
+            IRSBR instance with database connection and ingestion methods.
+        """
         cls_.source("countries", bl_fetch=False)
 
     @task(task_id="cities")
     def cities(cls_: IRSBR) -> None:
-        """Insert IRS BR data for cities."""
+        """Ingest city reference data from IRS BR.
+
+        Parameters
+        ----------
+        cls_ : IRSBR
+            IRSBR instance with database connection and ingestion methods.
+        """
         cls_.source("cities", bl_fetch=False)
 
     @task(task_id="shareholders_education")
     def shareholders_education(cls_: IRSBR) -> None:
-        """Insert IRS BR data for shareholders education."""
+        """Ingest shareholder education level data.
+
+        Parameters
+        ----------
+        cls_ : IRSBR
+            IRSBR instance with database connection and ingestion methods.
+        """
         cls_.source("shareholders_education", bl_fetch=False)
 
     @task(task_id="legal_form")
     def legal_form(cls_: IRSBR) -> None:
-        """Insert IRS BR data for legal form."""
+        """Ingest legal entity classification data.
+
+        Parameters
+        ----------
+        cls_ : IRSBR
+            IRSBR instance with database connection and ingestion methods.
+        """
         cls_.source("legal_form", bl_fetch=False)
 
     @task(task_id="ncea")
     def ncea(cls_: IRSBR) -> None:
-        """Insert IRS BR data for NCEA."""
+        """Ingest NCEA (National Classification of Economic Activities) data.
+
+        Parameters
+        ----------
+        cls_ : IRSBR
+            IRSBR instance with database connection and ingestion methods.
+        """
         cls_.source("ncea", bl_fetch=False)
 
     @task(task_id="registration_status")
     def registration_status(cls_: IRSBR) -> None:
-        """Insert IRS BR data for registration status."""
+        """Ingest company registration status data.
+
+        Parameters
+        ----------
+        cls_ : IRSBR
+            IRSBR instance with database connection and ingestion methods.
+        """
         cls_.source("registration_status", bl_fetch=False)
 
+    # task dependencies
     cls_instance = class_()
     companies_instance = companies(cls_instance)
     businesses_instance = businesses(cls_instance)
-    simplified_taxation_system_instance = simplified_taxation_system(
-        cls_instance)
+    simplified_taxation_system_instance = simplified_taxation_system(cls_instance)
     shareholders_instance = shareholders(cls_instance)
     countries_instance = countries(cls_instance)
     cities_instance = cities(cls_instance)
