@@ -16,7 +16,7 @@
   // LANGUAGE-SPECIFIC SETTINGS
   // =============================================
   "[python]": {
-    "editor.rulers": [79],
+    "editor.rulers": [99],
     "editor.defaultFormatter": "ms-python.autopep8",
     "editor.formatOnType": true,
     "workbench.colorCustomizations": {
@@ -25,7 +25,7 @@
   },
 
   "[sql]": {
-    "editor.rulers": [100],
+    "editor.rulers": [99],
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "workbench.colorCustomizations": {
       "editorRuler.foreground": "#D3D3D3"
@@ -33,7 +33,7 @@
   },
 
   "[yaml]": {
-    "editor.rulers": [100],
+    "editor.rulers": [99],
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "workbench.colorCustomizations": {
       "editorRuler.foreground": "#D3D3D3"
@@ -44,7 +44,7 @@
   // =============================================
   // FORMATTER CONFIGURATIONS
   // =============================================
-  "python.formatting.autopep8Args": ["--ignore", "E402"],
+  "python.linting.flake8Enabled": true,
   "prettier.useTabs": true,
   "prettier.singleQuote": true,
   "prettier.requirePragma": true,
