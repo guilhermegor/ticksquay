@@ -46,6 +46,7 @@ repos:
           - --force-sort-within-sections
           - --force-alphabetical-sort-within-sections
           - --multi-line GRID
+          - --line-length=99
         additional_dependencies: [setuptools==80.9.0]
   - repo: https://github.com/pycqa/pydocstyle
     rev: 6.3.0
