@@ -30,5 +30,5 @@ radon-max-cc = 9  # grade b threshold
 radon-no-assert = True
 
 # darglint
-strictness = full
-docstring_style = numpy
+darglint-strictness = full
+darglint-style = numpy
