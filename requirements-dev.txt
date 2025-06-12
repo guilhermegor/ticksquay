@@ -2,6 +2,7 @@ vscode:aaron-bond.better-comments
 vscode:alexcvzz.vscode-sqlite
 vscode:arjun.swagger-viewer
 vscode:cateyes99.simple-case
+vscode:charliermarsh.ruff
 vscode:christian-kohler.path-intellisense
 vscode:codeium.codeium
 vscode:darkriszty.markdown-table-prettify
@@ -44,6 +45,7 @@ vscode:pkief.material-icon-theme
 vscode:redhat.vscode-commons
 vscode:redhat.vscode-xml
 vscode:redhat.vscode-yaml
+vscode:tamasfe.even-better-toml
 vscode:usernamehw.errorlens
 vscode:wesleybatista.airflow-dag-viewer
 vscode:wmaurer.change-case

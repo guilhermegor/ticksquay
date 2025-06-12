@@ -20,7 +20,9 @@
     "editor.formatOnType": true,
     "workbench.colorCustomizations": {
       "editorRuler.foreground": "#D3D3D3"
-    }
+    },
+    "python.linting.flake8Enabled": true,
+    "python.linting.mypyEnabled": true,
   },
 
   "[sql]": {
@@ -43,7 +45,6 @@
   // =============================================
   // FORMATTER CONFIGURATIONS
   // =============================================
-  "python.linting.flake8Enabled": true,
   "prettier.useTabs": true,
   "prettier.singleQuote": true,
   "prettier.requirePragma": true,
