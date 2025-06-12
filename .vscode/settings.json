@@ -15,14 +15,12 @@
   // LANGUAGE-SPECIFIC SETTINGS
   // =============================================
   "[python]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.rulers": [99],
-    "editor.defaultFormatter": "ms-python.autopep8",
-    "editor.formatOnType": true,
     "workbench.colorCustomizations": {
       "editorRuler.foreground": "#D3D3D3"
     },
-    "python.linting.flake8Enabled": true,
-    "python.linting.mypyEnabled": true,
   },
 
   "[sql]": {
@@ -41,6 +39,14 @@
     }
   },
   "yaml.format.singleQuote": true,
+
+  "[toml]": {
+    "editor.rulers": [99],
+    "editor.defaultFormatter": "tamasfe.even-better-toml",
+    "workbench.colorCustomizations": {
+      "editorRuler.foreground": "#D3D3D3"
+    }
+  },
 
   // =============================================
   // FORMATTER CONFIGURATIONS

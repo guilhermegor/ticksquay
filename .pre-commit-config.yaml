@@ -4,7 +4,8 @@ repos:
     hooks:
       - id: no-commit-to-branch
       - id: trailing-whitespace
-        args: [--markdown-linebreak-ext=md]
+        args:
+          - --markdown-linebreak-ext=md
       - id: end-of-file-fixer
       - id: check-xml
       - id: check-yaml
@@ -31,58 +32,27 @@ repos:
         stages: [commit-msg]
         always_run: false
 
-  - repo: https://github.com/pycqa/flake8
-    rev: 7.2.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.13
     hooks:
-      - id: flake8
-        additional_dependencies:
-          - flake8-annotations==3.1.1
-          - flake8-bandit==4.1.1
-          - darglint==1.8.1
-          - flake8-bugbear==24.12.12
-          - flake8-eradicate==1.5.0
-          - radon==6.0.1
+      - id: ruff-format
         args:
-          # vulture
-          - --min-confidence=90
-          # darglint
-          - --darglint-strictness=full
-          - --darglint-style=numpy
-          # radon complexity threshold
-          - --radon-max-cc=10
-          - --radon-no-assert
-          - --radon-show-closures
-          # general flake8
-          - --max-line-length=99
-          - --max-complexity=10
-          - --exclude=.git,__pycache__,build,dist,.eggs,.tox,.venv,.env,*.egg-info,*.egg,*.pyc,*.pyo,*.pyd,*.db,*.sqlite3,*.log
-
-  - repo: https://github.com/pycqa/isort
-    rev: 6.0.1
-    hooks:
-      - id: isort
+          - --fix=only
+          - I
+      - id: ruff-check
         args:
-          - --profile=black
-          - --force-sort-within-sections
-          - --force-alphabetical-sort-within-sections
-          - --multi-line GRID
-          - --line-length=99
-
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.16.0
-    hooks:
-      - id: mypy
-        args:
-          - --disallow-untyped-defs
-          - --disallow-incomplete-defs
-          - --disallow-untyped-calls
-
-  - repo: https://github.com/jendrikseipp/vulture
-    rev: v2.7
-    hooks:
-      - id: vulture
-        args:
-          - --min-confidence=90
+          - --select
+          - UP
+          - E
+          - F
+          - ANN
+          - B
+          - SIM
+          - I
+          - AIR
+          - ERA
+          - S
+          - PD
 
   - repo: local
     hooks:
