@@ -52,11 +52,11 @@ python = "~3.12.8"
 stpstone = "2.0.9"
 python-dotenv = "1.1.0"
 apache-airflow = ">=3.0.0,<3.1.0"
+ruff = "0.11.13"
 
 [tool.poetry.group.dev.dependencies]
 poetry-plugin-export = "^1.9.0"
 pre-commit = "4.2.0"
-ruff = "0.11.13"
 
 [build-system]
 requires = ["poetry-core"]
