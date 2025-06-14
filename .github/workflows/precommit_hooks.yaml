@@ -1,4 +1,4 @@
-name: Run Tests
+name: Run Pre-Commit Hooks
 
 on:
   workflow_call:
@@ -57,28 +57,32 @@ jobs:
             poetry lock --no-cache
           fi
 
-          # install dependencies, checking for dev and docs groups if they are in the .toml file
-          without_groups=()
-          if grep -q '\[tool.poetry.group.dev\]' pyproject.toml; then
-            without_groups+=("dev")
-          fi
-          if grep -q '\[tool.poetry.group.docs\]' pyproject.toml; then
-            without_groups+=("docs")
-          fi
-          if [ ${#without_groups[@]} -gt 0 ]; then
-            echo "Excluding groups: ${without_groups[*]}"
-            poetry install --no-interaction --no-root --without $(IFS=,; echo "${without_groups[*]}")
-          else
-            echo "No groups to exclude, installing all dependencies"
-            poetry install --no-interaction --no-root
-          fi
+          # install all dependencies including dev and docs
+          poetry install --no-interaction --no-root
 
           # restore original pyproject.toml
           mv pyproject.original.toml pyproject.toml
           poetry env activate
 
-      - name: Run Unit Tests
-        run: poetry run python -m unittest discover -s tests/unit -p "*.py" -v
+      - name: Get Base SHA
+        id: base-sha
+        run: |
+          BASE_SHA=$(git merge-base origin/main HEAD)
+          echo "BASE_SHA=${BASE_SHA}" >> $GITHUB_OUTPUT
 
-      - name: Run Integration Tests
-        run: poetry run python -m unittest discover -s tests/integration -p "*.py" -v
+      - name: Get Changed Files
+        id: changed-files
+        run: |
+          # Get all changed files between base and HEAD
+          FILES=$(git diff --name-only ${{ steps.base-sha.outputs.BASE_SHA }} HEAD)
+          echo "all_changed_files=${FILES}" >> $GITHUB_OUTPUT
+          echo "any_changed=$( [ -n "$FILES" ] && echo true || echo false )" >> $GITHUB_OUTPUT
+
+      - name: Running Pre-Commit Hooks on Changed Files
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          # Run pre-commit only on changed files
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "Running pre-commit hooks on $file"
+            SKIP=no-commit-to-branch poetry run pre-commit run --files "$file"
+          done
