@@ -10,8 +10,8 @@ services:
     #   - /var/lib/postgresql/data: default directory where postgres stores its data
     command: >
       bash -c "
-        mkdir -p /mnt/sdc/postgresql_data &&  # ensure host dir exists (bind mount)
-        chown -R 999:999 /mnt/sdc/postgresql_data &&  # set postgresql permissions
+        mkdir -p ~/Donwloads/data_mktdata_collector &&  # ensure host dir exists (bind mount)
+        chown -R 999:999 ~/Donwloads/data_mktdata_collector &&  # set postgresql permissions
         chmod -R 0700 /var/lib/postgresql/data &&  # secure container data dir
         docker-entrypoint.sh postgres
       "
@@ -20,8 +20,8 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - PGDATA=/var/lib/postgresql/data
     volumes:
-      - /mnt/sdc/postgresql_data:/var/lib/postgresql/data
-      - ./bootstrap:/docker-entrypoint-initdb.d:rw
+      - ~/Donwloads/data_mktdata_collector:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d:rw
     ports:
       - "5432:5432"
     networks:

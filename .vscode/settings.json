@@ -15,9 +15,12 @@
   // LANGUAGE-SPECIFIC SETTINGS
   // =============================================
   "[python]": {
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.rulers": [99],
+    "editor.codeActionsOnSave": {
+			"source.organizeImports.ruff": "explicit"
+		},
     "workbench.colorCustomizations": {
       "editorRuler.foreground": "#D3D3D3"
     },
@@ -47,6 +50,13 @@
       "editorRuler.foreground": "#D3D3D3"
     }
   },
+
+
+	// =============================================
+	// RUFF SPECIFIC SETTINGS
+	// =============================================
+	"ruff.lint.select": ["I"],
+	"ruff.organizeImports": true,
 
   // =============================================
   // FORMATTER CONFIGURATIONS

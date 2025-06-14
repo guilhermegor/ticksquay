@@ -52,7 +52,7 @@ exclude = [
 [format]
 quote-style = "double"
 indent-style = "tab"
-docstring-code-format = true
+docstring-code-format = false
 docstring-code-line-length = 79  # original python standard - readability in terminal (help)
 
 [lint]
@@ -68,6 +68,10 @@ select = [
     "ERA", # eradicate - removes commented-out code
     "S",   # flake8-bandit - checks for security issues
     "PD",  # pandas-vet - checks for common pandas issues
+    "D",   # pydocstring - this enables all docstring checks
+]
+ignore = [
+    "D206",  # docstring should be indented with spaces, not tabs
 ]
 fixable = ["I"]
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"  # allow dummy variables to start

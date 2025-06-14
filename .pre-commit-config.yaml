@@ -21,8 +21,7 @@ repos:
           - --unsafe
       - id: check-toml
       - id: check-json
-        args:
-          - --unsafe
+        exclude: \.vscode/settings\.json
       - id: check-symlinks
       - id: debug-statements
       - id: check-added-large-files
@@ -51,6 +50,7 @@ repos:
     rev: v0.11.13
     hooks:
       - id: ruff
+        name: ruff check
         args:
           - --config=ruff.toml
 

@@ -44,6 +44,8 @@
 #
 # Feel free to modify this file to suit your needs.
 ---
+name: mktdata_scheduler
+
 x-airflow-common:
   &airflow-common
   # In order to add custom dependencies or upgrade provider distributions you can use your extended image.

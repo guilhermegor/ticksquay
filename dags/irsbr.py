@@ -1,7 +1,7 @@
 """DAG for IRSBR records data ingestion from Brazil taxation system."""
 import os
 
-from airflow.decorators import dag, task  # type: ignore[import]
+from airflow.decorators import dag, task
 from dotenv import load_dotenv
 from stpstone.ingestion.countries.br.taxation.irsbr_records import IRSBR
 from stpstone.utils.cals.handling_dates import DatesBR
@@ -9,6 +9,7 @@ from stpstone.utils.parsers.dicts import HandlingDicts
 from stpstone.utils.parsers.folders import DirFilesManagement
 
 from config.global_slots import CLS_POSTGRESQL_RAW, YAML_USER_CFG
+
 
 path_project = DirFilesManagement().find_project_root()
 path_env = f"{path_project}/.env"
@@ -30,7 +31,7 @@ load_dotenv(path_env)
         },
     ),
 )
-def irsbr_records_dag() -> None:  # noqa: C901 (function is too complex)
+def irsbr_records_dag() -> None:
     """Define workflow for IRSBR records data ingestion.
 
     This DAG orchestrates the ingestion of IRS BR (Brazilian tax system) records

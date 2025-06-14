@@ -1,5 +1,6 @@
 \connect mktdata_collector;
 
+
 -- ===============================================================
 -- METADATA TABLES (CREATED FIRST FOR FK CONSTRAINTS)
 -- REFERENCES:
@@ -12,11 +13,11 @@ DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw' AND table_name = 'br_irs_metadata_company_size') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_metadata_company_size (
                 CODE CHAR(2) NOT NULL,
-                DESCRIPTION_EN VARCHAR(20) NOT NULL,
-                DESCRIPTION_PT VARCHAR(20) NOT NULL,
+                DESCRIPTION_EN VARCHAR(30) NOT NULL,
+                DESCRIPTION_PT VARCHAR(30) NOT NULL,
                 REF_DATE DATE NOT NULL DEFAULT CURRENT_DATE,
                 LOG_TIMESTAMP TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 CONSTRAINT pk_br_irs_metadata_company_size
@@ -30,7 +31,7 @@ BEGIN
                 ('01', 'MICRO', 'MICROEMPRESA'),
                 ('03', 'SMALL', 'EMPRESA DE PEQUENO PORTE'),
                 ('05', 'OTHERS', 'DEMAIS');
-        ';
+        $SQL$;
     END IF;
 END $$;
 
@@ -40,7 +41,7 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw'
                    AND table_name = 'br_irs_metadata_id_headquarters_branch') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_metadata_id_headquarters_branch (
                 CODE CHAR(1) NOT NULL,
                 DESCRIPTION_EN VARCHAR(20) NOT NULL,
@@ -56,7 +57,7 @@ BEGIN
             INSERT INTO raw.br_irs_metadata_id_headquarters_branch (CODE, DESCRIPTION_EN, DESCRIPTION_PT) VALUES
                 ('1', 'HEADQUARTERS', 'MATRIZ'),
                 ('2', 'BRANCH', 'FILIAL');
-        ';
+        $SQL$;
     END IF;
 END $$;
 
@@ -66,11 +67,11 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw'
                    AND table_name = 'br_irs_metadata_registration_status') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_metadata_registration_status (
                 CODE CHAR(2) NOT NULL,
-                DESCRIPTION_EN VARCHAR(20) NOT NULL,
-                DESCRIPTION_PT VARCHAR(20) NOT NULL,
+                DESCRIPTION_EN VARCHAR(30) NOT NULL,
+                DESCRIPTION_PT VARCHAR(30) NOT NULL,
                 REF_DATE DATE NOT NULL DEFAULT CURRENT_DATE,
                 LOG_TIMESTAMP TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 CONSTRAINT pk_br_irs_metadata_registration_status
@@ -86,7 +87,7 @@ BEGIN
                 ('04', 'UNFIT', 'INAPTA'),
                 ('05', 'ACTIVE NOT REGULARIZED', 'ATIVA NÃO REGULAR'),
                 ('08', 'CANCELED', 'BAIXADA');
-        ';
+        $SQL$;
     END IF;
 END $$;
 
@@ -96,7 +97,7 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw'
                    AND table_name = 'br_irs_metadata_simplified_tx_system') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_metadata_simplified_tx_system (
                 CODE VARCHAR(10) NOT NULL,
                 DESCRIPTION_EN VARCHAR(20) NOT NULL,
@@ -113,7 +114,7 @@ BEGIN
                 ('S', 'YES', 'SIM'),
                 ('N', 'NO', 'NÃO'),
                 ('EM BRANCO', 'OTHERS', 'OUTROS');
-        ';
+        $SQL$;
     END IF;
 END $$;
 
@@ -122,7 +123,7 @@ DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw' AND table_name = 'br_irs_metadata_mei') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_metadata_mei (
                 CODE VARCHAR(10) NOT NULL,
                 DESCRIPTION_EN VARCHAR(20) NOT NULL,
@@ -139,7 +140,7 @@ BEGIN
                 ('S', 'YES', 'SIM'),
                 ('N', 'NO', 'NÃO'),
                 ('EM BRANCO', 'OTHERS', 'OUTROS');
-        ';
+        $SQL$;
     END IF;
 END $$;
 
@@ -148,7 +149,7 @@ DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw' AND table_name = 'br_irs_metadata_person_type') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_metadata_person_type (
                 CODE CHAR(1) NOT NULL,
                 DESCRIPTION_EN VARCHAR(20) NOT NULL,
@@ -165,7 +166,7 @@ BEGIN
                 ('1', 'LEGAL ENTITY', 'PESSOA JURÍDICA'),
                 ('2', 'NATURAL PERSON', 'PESSOA FÍSICA'),
                 ('3', 'FOREIGNER', 'ESTRANGEIRO');
-        ';
+        $SQL$;
     END IF;
 END $$;
 
@@ -174,7 +175,7 @@ DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw' AND table_name = 'br_irs_metadata_reason_registration_status') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_metadata_reason_registration_status (
                 CODE CHAR(2) NOT NULL,
                 DESCRIPTION_EN VARCHAR(100) NOT NULL,
@@ -259,7 +260,7 @@ BEGIN
                 ('75', 'DEATH OF MEI | DECEASED OWNER', 'ÓBITO DO MEI | TITULAR FALECIDO'),
                 ('80', 'CANCELLATION REGISTERED AT THE BOARD OF TRADE, DENIED AT RFB', 'BAIXA REGISTRADA NA JUNTA, INDEFERIDA NA RFB'),
                 ('82', 'SUSPENDED BEFORE THE SECURITIES AND EXCHANGE COMMISSION - CVM', 'SUSPENSO PERANTE A COMISSÃO DE VALORES MOBILIÁRIOS - CVM');
-        ';
+        $SQL$;
     END IF;
 END $$;
 
@@ -269,7 +270,7 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw'
                    AND table_name = 'br_irs_metadata_responsible_party_qualification') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_metadata_responsible_party_qualification (
                 CODE CHAR(2) NOT NULL,
                 DESCRIPTION_EN VARCHAR(100) NOT NULL,
@@ -312,7 +313,7 @@ BEGIN
                 ('62', 'EXTRATERRITORIAL INSTITUTION REPRESENTATIVE', 'REPRESENTANTE DA INSTITUIÇÃO EXTRATERRITORIAL'),
                 ('64', 'JUDICIAL ADMINISTRATOR', 'ADMINISTRADOR JUDICIAL'),
                 ('65', 'INDIVIDUAL OWNER RESIDENT OR DOMICILED IN BRAZIL', 'TITULAR PESSOA FÍSICA RESIDENTE OU DOMICILIADO NO BRASIL');
-        ';
+        $SQL$;
     END IF;
 END $$;
 
@@ -322,7 +323,7 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw'
                    AND table_name = 'br_irs_metadata_shareholder_education') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_metadata_shareholder_education (
                 CODE CHAR(2) NOT NULL,
                 DESCRIPTION_EN VARCHAR(100) NOT NULL,
@@ -380,7 +381,7 @@ BEGIN
                 ('75', 'FOUNDER RESIDENT OR DOMICILED ABROAD', 'FUNDADOR RESIDENTE OU DOMICILIADO NO EXTERIOR'),
                 ('78', 'LEGAL ENTITY OWNER DOMICILED IN BRAZIL', 'TITULAR PESSOA JURÍDICA DOMICILIADA NO BRASIL'),
                 ('79', 'LEGAL ENTITY OWNER DOMICILED ABROAD', 'TITULAR PESSOA JURÍDICA DOMICILIADA NO EXTERIOR');
-        ';
+        $SQL$;
     END IF;
 END $$;
 
@@ -389,7 +390,7 @@ DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw' AND table_name = 'br_irs_metadata_ncea') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_metadata_ncea (
                 CODE CHAR(7) NOT NULL,
                 DESCRIPTION_EN VARCHAR(200) NOT NULL,
@@ -1761,7 +1762,7 @@ BEGIN
                 ('9609299', 'OTHER PERSONAL SERVICE ACTIVITIES NOT SPECIFIED ABOVE', 'OUTRAS ATIVIDADES DE SERVIÇOS PESSOAIS NÃO ESPECIFICADAS ANTERIORMENTE'),
                 ('9700500', 'DOMESTIC SERVICES', 'SERVIÇOS DOMÉSTICOS'),
                 ('9900800', 'INTERNATIONAL ORGANIZATIONS AND OTHER EXTRATERRITORIAL INSTITUTIONS', 'ORGANISMOS INTERNACIONAIS E OUTRAS INSTITUIÇÕES EXTRATERRITORIAIS');
-            ';
+            $SQL$;
     END IF;
 END $$;
 
@@ -1775,7 +1776,7 @@ DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw' AND table_name = 'br_irs_companies') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_companies (
                 EIN_COMPANY VARCHAR(14) NOT NULL,
                 COMPANY_NAME VARCHAR(100) NOT NULL,
@@ -1794,7 +1795,7 @@ BEGIN
                 CONSTRAINT fk_br_irs_companies_size FOREIGN KEY (CODE_COMPANY_SIZE)
                     REFERENCES raw.br_irs_metadata_company_size(CODE)
             );
-        ';
+        $SQL$;
     END IF;
 END $$;
 
@@ -1803,7 +1804,7 @@ DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw' AND table_name = 'br_irs_businesses') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_businesses (
                 EIN_BASIC CHAR(8) NOT NULL,
                 EIN_ORDER CHAR(4) NOT NULL,
@@ -1853,7 +1854,7 @@ BEGIN
                 CONSTRAINT fk_br_irs_businesses_ncea_secondary FOREIGN KEY (NCEA_SECONDARY)
                     REFERENCES raw.br_irs_metadata_ncea(CODE)
             );
-        ';
+        $SQL$;
     END IF;
 END $$;
 
@@ -1862,7 +1863,7 @@ DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw' AND table_name = 'br_irs_simp_tax_sys') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_simp_tax_sys (
                 EIN_BASIC CHAR(8) NOT NULL,
                 CODE_SIMPL_TX VARCHAR(10) NOT NULL,
@@ -1875,12 +1876,12 @@ BEGIN
                     PRIMARY KEY (EIN_BASIC),
                 CONSTRAINT uq_br_irs_simp_tax_sys
                     UNIQUE (EIN_BASIC, CODE_SIMPL_TX, CODE_MEI_TX),
-                CONSTRAINT fk_br_irs_simp_tax_s ys_simplified_tx FOREIGN KEY (CODE_SIMPL_TX)
+                CONSTRAINT fk_br_irs_simp_tax_sys_simplified_tx FOREIGN KEY (CODE_SIMPL_TX)
                     REFERENCES raw.br_irs_metadata_simplified_tx_system(CODE),
                 CONSTRAINT fk_br_irs_simp_tax_sys_mei FOREIGN KEY (CODE_MEI_TX)
                     REFERENCES raw.br_irs_metadata_mei(CODE)
             );
-        ';
+        $SQL$;
     END IF;
 END $$;
 
@@ -1889,7 +1890,7 @@ DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw' AND table_name = 'br_irs_shareholders') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_shareholders (
                 EIN_BASIC CHAR(8) NOT NULL,
                 ID_PERSON_TYPE CHAR(1) NOT NULL,
@@ -1908,15 +1909,15 @@ BEGIN
                 CONSTRAINT pk_br_irs_shareholders_ein_basic
                     PRIMARY KEY (EIN_BASIC),
                 CONSTRAINT uq_br_irs_shareholders
-                    UNIQUE (EIN_BASIC, SHAREHOLDER_NAME, ID_PERSON_TYPE),
+                    UNIQUE (EIN_BASIC, ID_PERSON_TYPE, NAME, DOC, CODE_EDUCATION, DT_BEG_SHAREHOLDER),
                 CONSTRAINT fk_br_irs_shareholders_type_person FOREIGN KEY (ID_PERSON_TYPE)
-                    REFERENCES raw.br_irs_metadata_person_type(CODE)
+                    REFERENCES raw.br_irs_metadata_person_type(CODE),
                 CONSTRAINT fk_br_irs_shareholders_education FOREIGN KEY (CODE_EDUCATION)
-                    REFERENCES raw.br_irs_shareholders_education(CODE)
+                    REFERENCES raw.br_irs_metadata_shareholder_education(CODE),
                 CONSTRAINT fk_br_irs_shareholders_education_legal_rep FOREIGN KEY (CODE_EDUCATION_LEGAL_REPRESENTATIVE)
-                    REFERENCES raw.br_irs_shareholders_education(CODE)
+                    REFERENCES raw.br_irs_metadata_shareholder_education(CODE)
             );
-        ';
+        $SQL$;
     END IF;
 END $$;
 
@@ -1925,7 +1926,7 @@ DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw' AND table_name = 'br_irs_countries') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_countries (
                 CODE CHAR(3) NOT NULL,
                 NAME VARCHAR(100) NOT NULL,
@@ -1937,7 +1938,7 @@ BEGIN
                 CONSTRAINT uq_br_irs_countries
                     UNIQUE (CODE, NAME)
             );
-        ';
+        $SQL$;
     END IF;
 END $$;
 
@@ -1946,7 +1947,7 @@ DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw' AND table_name = 'br_irs_cities') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_cities (
                 CODE CHAR(4) NOT NULL,
                 NAME VARCHAR(100) NOT NULL,
@@ -1954,11 +1955,11 @@ BEGIN
                 REF_DATE DATE NOT NULL DEFAULT CURRENT_DATE,
                 LOG_TIMESTAMP TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 CONSTRAINT pk_br_irs_cities_id
-                    PRIMARY KEY (ID),
+                    PRIMARY KEY (CODE),
                 CONSTRAINT uq_br_irs_cities
-                    UNIQUE (ID, NAME, STATE_ID)
+                    UNIQUE (CODE, NAME)
             );
-        ';
+        $SQL$;
     END IF;
 END $$;
 
@@ -1967,7 +1968,7 @@ DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw' AND table_name = 'br_irs_shareholders_education') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_shareholders_education (
                 CODE VARCHAR(2) NOT NULL,
                 DESCRIPTION VARCHAR(100) NOT NULL,
@@ -1979,7 +1980,7 @@ BEGIN
                 CONSTRAINT uq_br_irs_shareholders_education
                     UNIQUE (CODE, DESCRIPTION)
             );
-        ';
+        $SQL$;
     END IF;
 END $$;
 
@@ -1988,7 +1989,7 @@ DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw' AND table_name = 'br_irs_legal_form') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_legal_form (
                 CODE VARCHAR(2) NOT NULL,
                 DESCRIPTION VARCHAR(100) NOT NULL,
@@ -2000,7 +2001,7 @@ BEGIN
                 CONSTRAINT uq_br_irs_legal_form
                     UNIQUE (CODE, DESCRIPTION)
             );
-        ';
+        $SQL$;
     END IF;
 END $$;
 
@@ -2009,7 +2010,7 @@ DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw' AND table_name = 'br_irs_cnae') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_cnae (
                 CODE VARCHAR(7) NOT NULL,
                 DESCRIPTION VARCHAR(100) NOT NULL,
@@ -2021,7 +2022,7 @@ BEGIN
                 CONSTRAINT uq_br_irs_cnae
                     UNIQUE (CODE, DESCRIPTION)
             );
-        ';
+        $SQL$;
     END IF;
 END $$;
 
@@ -2030,7 +2031,7 @@ DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.tables
                    WHERE table_schema = 'raw' AND table_name = 'br_irs_registration_status') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE TABLE raw.br_irs_registration_status (
                 CODE VARCHAR(1) NOT NULL,
                 DESCRIPTION VARCHAR(50) NOT NULL,
@@ -2042,7 +2043,7 @@ BEGIN
                 CONSTRAINT uq_br_irs_registration_status
                     UNIQUE (CODE, DESCRIPTION)
             );
-        ';
+        $SQL$;
     END IF;
 END $$;
 
@@ -2078,54 +2079,54 @@ DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.views
                    WHERE table_schema = 'raw' AND table_name = 'vw_br_irs_companies_full') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE VIEW raw.vw_br_irs_companies_full AS
             SELECT
                 cmp.*,
-                cs.DESCRIPTION as CODE_COMPANY_SIZE_DESC
+                sze.DESCRIPTION_PT as CODE_COMPANY_SIZE_DESC
             FROM raw.br_irs_companies as cmp
             LEFT JOIN raw.br_irs_metadata_company_size sze ON cmp.CODE_COMPANY_SIZE = sze.CODE;
-        ';
+        $SQL$;
     END IF;
 
     IF NOT EXISTS (SELECT 1 FROM information_schema.views
                    WHERE table_schema = 'raw' AND table_name = 'vw_br_irs_businesses_full') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE VIEW raw.vw_br_irs_businesses_full AS
             SELECT
                 bsn.*,
-                CONCATENATE(bsn.EIN_BASIC, bsn.EIN_ORDER, bsn.EIN_VD) AS EIN_COMPANY,
-                hbr.DESCRIPTION as HEADQUARTERS_BRANCH_DESC,
-                rgs.DESCRIPTION as REGISTRATION_STATUS_DESC
+                bsn.EIN_BASIC || bsn.EIN_ORDER || bsn.EIN_VD AS EIN_COMPANY,
+                hbr.DESCRIPTION_PT as HEADQUARTERS_BRANCH_DESC,
+                rgs.DESCRIPTION_PT as REGISTRATION_STATUS_DESC
             FROM raw.br_irs_businesses bsn
             LEFT JOIN raw.br_irs_metadata_id_headquarters_branch hbr ON bsn.ID_HEADQUARTERS_BRANCH = hbr.CODE
             LEFT JOIN raw.br_irs_metadata_registration_status rgs ON bsn.ID_REGISTRATION_STATUS = rgs.CODE;
-        ';
+        $SQL$;
     END IF;
 
     IF NOT EXISTS (SELECT 1 FROM information_schema.views
                    WHERE table_schema = 'raw' AND table_name = 'vw_br_irs_simp_tax_sys_full') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE VIEW raw.vw_br_irs_simp_tax_sys_full AS
             SELECT
                 stx.*,
-                mtd.DESCRIPTION as SIMPLIFIED_TAX_DESC,
-                mei.DESCRIPTION as MEI_TAX_DESC
+                mtd.DESCRIPTION_PT as SIMPLIFIED_TAX_DESC,
+                mei.DESCRIPTION_PT as MEI_TAX_DESC
             FROM raw.br_irs_simp_tax_sys stx
             LEFT JOIN raw.br_irs_metadata_simplified_tx_system mtd ON stx.CODE_SIMPL_TX = mtd.CODE
             LEFT JOIN raw.br_irs_metadata_mei mei ON stx.CODE_MEI_TX = mei.CODE;
-        ';
+        $SQL$;
     END IF;
 
     IF NOT EXISTS (SELECT 1 FROM information_schema.views
                    WHERE table_schema = 'raw' AND table_name = 'vw_br_irs_shareholders_full') THEN
-        EXECUTE '
+        EXECUTE $SQL$
             CREATE VIEW raw.vw_br_irs_shareholders_full AS
             SELECT
                 shh.*,
-                prs.DESCRIPTION as TYPE_PERSON_DESC
+                prs.DESCRIPTION_PT as TYPE_PERSON_DESC
             FROM raw.br_irs_shareholders shh
             LEFT JOIN raw.br_irs_metadata_person_type prs ON shh.ID_PERSON_TYPE = prs.CODE;
-        ';
+        $SQL$;
     END IF;
 END $$;
