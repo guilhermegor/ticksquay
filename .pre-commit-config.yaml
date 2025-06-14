@@ -2,21 +2,37 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
+      - id: forbid-new-submodules
+      - id: detect-private-key
+      - id: detect-aws-credentials
+        args:
+          - --allow-missing-credentials
+      - id: check-merge-conflict
       - id: no-commit-to-branch
+        args:
+          - --branch=main
       - id: trailing-whitespace
         args:
           - --markdown-linebreak-ext=md
       - id: end-of-file-fixer
       - id: check-xml
       - id: check-yaml
+        args:
+          - --unsafe
       - id: check-toml
+      - id: check-json
+        args:
+          - --unsafe
+      - id: check-symlinks
       - id: debug-statements
-      - id: detect-private-key
       - id: check-added-large-files
+        args:
+          - --maxkb=500
+        exclude: (?i)^data/large/.*
       - id: check-illegal-windows-names
-      - id: check-merge-conflict
       - id: check-case-conflict
       - id: name-tests-test
+      - id: requirements-txt-fixer
 
   - repo: https://github.com/commitizen-tools/commitizen
     rev: v4.8.3
@@ -35,24 +51,9 @@ repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.11.13
     hooks:
-      - id: ruff-format
+      - id: ruff
         args:
-          - --fix=only
-          - I
-      - id: ruff-check
-        args:
-          - --select
-          - UP
-          - E
-          - F
-          - ANN
-          - B
-          - SIM
-          - I
-          - AIR
-          - ERA
-          - S
-          - PD
+          - --config=ruff.toml
 
   - repo: local
     hooks:
