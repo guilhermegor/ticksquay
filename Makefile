@@ -8,6 +8,9 @@ env_build:
 	bash cli/env_config.sh
 
 # docker compose stack
+check_docker:
+	bash cli/docker_init.sh
+
 docker_rm_rmi_airflow_env:
 	@docker ps -a --filter "name=airflow-env" -q | grep -q . && docker rm airflow-env || true
 	@docker rmi airflow-env:1.0 || true --force
@@ -38,7 +41,7 @@ run_compose_stack_no_cache: docker_rm_rmi_airflow_env
 	docker compose --env-file postgres_mktdata.env -f postgres_docker-compose.yml up -d
 	docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d --no-deps --build airflow-apiserver airflow-scheduler
 
-test_postgres_env:
+test_postgres_env: check_docker
 	docker compose -f postgres_docker-compose.yml down -v --remove-orphans
 	docker system prune --volumes --force
 	docker network prune -f
@@ -50,17 +53,13 @@ test_postgres_env:
 	docker compose --env-file postgres_mktdata.env -f postgres_docker-compose.yml up -d
 	docker compose --env-file postgres_mktdata.env -f postgres_docker-compose.yml logs -f postgres_mktdata
 
-test_airflow_env: docker_airflow_down_no_cache
+test_airflow_env: check_docker docker_airflow_down_no_cache
 	export DOCKER_BUILDKIT=1
 	docker build --no-cache -f airflow-env_dockerfile -t airflow-env:1.0 .
 	docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d --no-deps --build airflow-apiserver airflow-scheduler
 
 test_airflow_packages_installation:
 	./cli/test_airflow_packages_installation.sh
-
-# system commands
-check_docker:
-	./shell/docker_init.sh
 
 # git
 precommit_update:
