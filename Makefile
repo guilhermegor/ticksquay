@@ -41,17 +41,8 @@ run_compose_stack_no_cache: docker_rm_rmi_airflow_env
 	docker compose --env-file postgres_mktdata.env -f postgres_docker-compose.yml up -d
 	docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d --no-deps --build airflow-apiserver airflow-scheduler
 
-test_postgres_env: check_docker
-	docker compose -f postgres_docker-compose.yml down -v --remove-orphans
-	docker system prune --volumes --force
-	docker network prune -f
-	docker volume prune -f
-	docker builder prune -a --force
-	docker image prune -a --force
-	rm -rf ~/Donwloads/data_mktdata_collector
-	export DOCKER_BUILDKIT=1
-	docker compose --env-file postgres_mktdata.env -f postgres_docker-compose.yml up -d
-	docker compose --env-file postgres_mktdata.env -f postgres_docker-compose.yml logs -f postgres_mktdata
+test_postgres_env:
+	bash cli/test_postgres_env.sh
 
 test_airflow_env: check_docker docker_airflow_down_no_cache
 	export DOCKER_BUILDKIT=1
