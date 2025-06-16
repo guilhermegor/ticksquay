@@ -1,6 +1,6 @@
-FROM apache/airflow:slim-3.0.1-python3.12
+FROM apache/airflow:slim-3.0.2-python3.12
 
 COPY . .
 
-RUN pip install --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt

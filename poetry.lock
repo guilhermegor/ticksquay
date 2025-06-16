@@ -7270,14 +7270,14 @@ docs = ["ipykernel", "jupyter-client", "matplotlib", "nbconvert", "nbformat", "n
 
 [[package]]
 name = "stpstone"
-version = "2.0.9"
+version = "2.0.11"
 description = "Solid financial ETL, analytics and utils with support to global markets."
 optional = false
 python-versions = "<3.14,>=3.12.8"
 groups = ["main"]
 files = [
-    {file = "stpstone-2.0.9-py3-none-any.whl", hash = "sha256:c9664dfbf0baa1f05105ce3396419b6613d9f5120aa6e58cb2f86cd8d0bfd0f2"},
-    {file = "stpstone-2.0.9.tar.gz", hash = "sha256:ff4adcecd44122ff9a61146b0efa98f2d9b6c0ee617681d4391c9a1c3b9f9b19"},
+    {file = "stpstone-2.0.11-py3-none-any.whl", hash = "sha256:d353ed99b55b50a4db009267d43f2e203f23ccdfc100fb5fbcb0857450f87939"},
+    {file = "stpstone-2.0.11.tar.gz", hash = "sha256:01ccd73f2b21b539eb14a134e74882a9503525349f1faa3e13a45e549c5ba885"},
 ]
 
 [package.dependencies]
@@ -8626,4 +8626,4 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "2.1"
 python-versions = "~3.12.8"
-content-hash = "26888e87bf8f793a75ece4d9b5ac9ad6dd027419d80f5d248070622ebed10568"
+content-hash = "4487226504f8ce9287bef8d79f04d900304f74e7520c97fc6c5fa8ece8b69b75"

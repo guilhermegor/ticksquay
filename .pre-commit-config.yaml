@@ -54,6 +54,13 @@ repos:
         args:
           - --config=ruff.toml
 
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint-docker
+        name: lint dockerfiles
+        files: (?i).*dockerfile
+
   - repo: local
     hooks:
       - id: check-unix-filenames
@@ -61,18 +68,21 @@ repos:
         entry: bash cli/check_unix_filenames.sh
         language: system
         types: [file]
+
       - id: export-dependencies
         name: export dependencies
         entry: bash cli/export_deps.sh
         language: system
         types: [file]
         pass_filenames: false
+
       - id: unit-tests
         name: checking unit tests
         entry: poetry run python -m unittest discover -s tests/unit -p "*.py"
         language: system
         types: [file]
         pass_filenames: false
+
       - id: integration-tests
         name: checking integration tests
         entry: poetry run python -m unittest discover -s tests/integration -p "*.py"
