@@ -1,6 +1,8 @@
-FROM apache/airflow:slim-3.0.2-python3.12
+FROM apache/airflow:slim-2.8.4-python3.9
 
 COPY . .
 
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir -r requirements.txt && \
+    poetry config virtualenvs.create false && \
+    poetry install --no-root --only main

@@ -7,6 +7,17 @@ bump_version:
 env_build:
 	bash cli/env_config.sh
 
+airflow_change_tag:
+	@if [ -z "$(AIRFLOW_VERSION)" ]; then \
+		echo "Error: AIRFLOW_VERSION must be set"; \
+		echo "Usage: make airflow_change_tag AIRFLOW_VERSION=x.y.z"; \
+		exit 1; \
+	fi
+	bash cli/airflow_change_tag.sh $(AIRFLOW_VERSION)
+
+airflow_matrix_test_versions:
+	bash cli/airflow_matrix_test_versions.sh
+
 # docker compose stack
 check_docker:
 	bash cli/docker_init.sh
@@ -29,12 +40,21 @@ docker_airflow_down:
 	docker compose -f airflow_docker-compose.yml down
 	docker rm -f airflow-env:1.0
 
-run_compose_stack:
+run_compose_stack: check_docker
 	export DOCKER_BUILDKIT=1
-	docker build --debug --no-cache -f airflow-env_dockerfile -t airflow-env:1.0 .
-	docker run --rm -e AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@host.docker.internal/airflow airflow-env:1.0 airflow db migrate
+	bash cli/kill_pids_ports.sh 5432 5433
+	docker build --no-cache -f airflow-env_dockerfile -t airflow-env:1.0 .
 	docker compose --env-file postgres_mktdata.env -f postgres_docker-compose.yml up -d
-	docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d
+	docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d || \
+	( \
+	  echo "=== INITIALIZATION LOGS ===" && \
+	  docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml logs airflow-init && \
+	  echo "=== API SERVER LOGS ===" && \
+	  docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml logs airflow-apiserver && \
+	  echo "=== ALL SERVICES LOGS ===" && \
+	  docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml logs && \
+	  false \
+	)
 
 run_compose_stack_no_cache: check_docker docker_airflow_down_no_cache
 	export DOCKER_BUILDKIT=1
@@ -42,14 +62,18 @@ run_compose_stack_no_cache: check_docker docker_airflow_down_no_cache
 	docker build --no-cache -f airflow-env_dockerfile -t airflow-env:1.0 .
 	docker compose --env-file postgres_mktdata.env -f postgres_docker-compose.yml up -d
 	docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d || \
-	(docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml logs airflow-apiserver && false)
-	docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml logs
+	( \
+	  echo "=== INITIALIZATION LOGS ===" && \
+	  docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml logs airflow-init && \
+	  echo "=== API SERVER LOGS ===" && \
+	  docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml logs airflow-apiserver && \
+	  echo "=== ALL SERVICES LOGS ===" && \
+	  docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml logs && \
+	  false \
+	)
 
 test_postgres_env:
 	bash cli/test_postgres_env.sh
-
-test_airflow_packages_installation:
-	./cli/test_airflow_packages_installation.sh
 
 # git
 precommit_update:

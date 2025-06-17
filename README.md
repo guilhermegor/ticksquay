@@ -1,9 +1,8 @@
 # ticksquay <img src="img/logo-3.jpg" align="right" width="200" style="border-radius: 15px;" alt="ticksquay">
 
 [![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-![Docker Version](https://img.shields.io/badge/docker-v4.37.1+-blue.svg)
-![Python Version](https://img.shields.io/badge/python-3.12+-blue.svg)
-![Apache Airflow](https://img.shields.io/badge/airflow-2.10.4-ff6f00.svg)
+![Python Version](https://img.shields.io/badge/python-3.9.22-blue.svg)
+![Apache Airflow](https://img.shields.io/badge/airflow-2.11.0-ff6f00.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)
 ![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-darkgreen.svg)
@@ -81,6 +80,9 @@ graph TB
     end
 ```
 
+### External References
+- [Airflow Docker Compose](https://airflow.apache.org/docs/apache-airflow/2.11.0/docker-compose.yaml)
+- [Airflow Docker Image](https://hub.docker.com/r/apache/airflow/tags?page=1)
 ---
 
 ## 📋 Prerequisites
