@@ -54,6 +54,7 @@ python = ">=3.9,<3.13"
 stpstone = "2.0.15"
 psycopg2-binary = "^2.9.3"
 apache-airflow = [{ version = ">=2.7.3,<4.0.0", python = ">=3.9,<3.13" }]
+python-dotenv = "1.1.0"
 
 [tool.poetry.group.dev.dependencies]
 poetry-plugin-export = "^1.9.0"
