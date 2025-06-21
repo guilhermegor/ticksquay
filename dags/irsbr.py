@@ -1,23 +1,13 @@
 """DAG for IRSBR records data ingestion from Brazil taxation system."""
 import os
-import sys
 
 from airflow.decorators import dag, task
-from dotenv import load_dotenv
 from stpstone.ingestion.countries.br.taxation.irsbr_records import IRSBR
 from stpstone.utils.cals.handling_dates import DatesBR
 from stpstone.utils.parsers.dicts import HandlingDicts
-from stpstone.utils.parsers.folders import DirFilesManagement
 
 from config.global_slots import CLS_POSTGRESQL_RAW, YAML_USER_CFG
 
-
-path_project = DirFilesManagement().find_project_root()
-path_env = f"{path_project}/.env"
-load_dotenv(path_env)
-
-if os.getenv("DISABLE_PRD_DAGS") == "true":
-    sys.exit(0)
 
 @dag(
     dag_id="irsbr",

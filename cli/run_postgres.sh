@@ -33,8 +33,8 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 POSTGRES_PORT=5432
 POSTGRES_COMPOSE_FILE="postgres_docker-compose.yml"
-POSTGRES_ENV_FILE="postgres_mktdata.env"
-DATA_DIR="$HOME/Downloads/data_mktdata_collector"
+POSTGRES_ENV_FILE="db_mktdata.env"
+DATA_DIR="$HOME/Downloads/mktdata_storage"
 
 is_port_free() {
     local port=$1
@@ -428,14 +428,14 @@ EOF
     sleep 10
 
     print_status "config" "Showing PostgreSQL logs..."
-    docker compose --env-file "$POSTGRES_ENV_FILE" -f "$POSTGRES_COMPOSE_FILE" logs postgres_mktdata || true
+    docker compose --env-file "$POSTGRES_ENV_FILE" -f "$POSTGRES_COMPOSE_FILE" logs db_mktdata || true
 
     print_status "config" "Testing PostgreSQL connection..."
     local max_wait=30
     local wait_time=0
 
     while [ $wait_time -lt $max_wait ]; do
-        if docker compose --env-file "$POSTGRES_ENV_FILE" -f "$POSTGRES_COMPOSE_FILE" exec -T postgres_mktdata pg_isready -U postgres &>/dev/null; then
+        if docker compose --env-file "$POSTGRES_ENV_FILE" -f "$POSTGRES_COMPOSE_FILE" exec -T db_mktdata pg_isready -U postgres &>/dev/null; then
             print_status "success" "PostgreSQL is ready and accepting connections!"
             return 0
         fi

@@ -22,8 +22,8 @@ print_status() {
     esac
 }
 
-MAIN_ENV_FILE="./airflow_mktdata.env"
-POSTGRES_ENV_FILE="./postgres_mktdata.env"
+DB_ENV_FILE="./db_mktdata.env"
+SCHEDULER_ENV_FILE="./scheduler_mktdata.env"
 
 append_if_not_exist() {
     local file="$1"
@@ -60,23 +60,30 @@ append_if_not_exist() {
 
 print_status "info" "Starting environment file setup..."
 
-# airflow_mktdata.env setup
-print_status "config" "Configuring Airflow environment..."
-append_if_not_exist "$MAIN_ENV_FILE" "AIRFLOW_UID" "50000"
-append_if_not_exist "$MAIN_ENV_FILE" "AIRFLOW_IMAGE_NAME" "airflow-env:1.0"
-append_if_not_exist "$MAIN_ENV_FILE" "_AIRFLOW_WWW_USER_USERNAME" "airflow"
-append_if_not_exist "$MAIN_ENV_FILE" "_AIRFLOW_WWW_USER_PASSWORD" "PLEASE_FILL"
-
-# postgres_mktdata.env setup
+# db_mktdata.env setup
 print_status "config" "Configuring PostgreSQL environment..."
-append_if_not_exist "$POSTGRES_ENV_FILE" "POSTGRES_USER" "postgres"
-append_if_not_exist "$POSTGRES_ENV_FILE" "POSTGRES_PASSWORD" "PLEASE_FILL"
-append_if_not_exist "$POSTGRES_ENV_FILE" "PGADMIN_DEFAULT_EMAIL" "admin@admin.com"
-append_if_not_exist "$POSTGRES_ENV_FILE" "PGADMIN_DEFAULT_PASSWORD" "PLEASE_FILL"
+append_if_not_exist "$DB_ENV_FILE" "POSTGRES_USER" "postgres"
+append_if_not_exist "$DB_ENV_FILE" "POSTGRES_PASSWORD" "postgres"
+append_if_not_exist "$DB_ENV_FILE" "PGADMIN_DEFAULT_EMAIL" "admin@admin.com"
+append_if_not_exist "$DB_ENV_FILE" "PGADMIN_DEFAULT_PASSWORD" "admin"
 
-if [ -f "$MAIN_ENV_FILE" ] && [ -f "$POSTGRES_ENV_FILE" ]; then
+# scheduler_mktdata.env setup
+print_status "config" "Configuring Airflow Scheduler environment..."
+append_if_not_exist "$SCHEDULER_ENV_FILE" "AIRFLOW_UID" "50000"
+append_if_not_exist "$SCHEDULER_ENV_FILE" "AIRFLOW_IMAGE_NAME" "airflow-env:1.0"
+append_if_not_exist "$SCHEDULER_ENV_FILE" "_AIRFLOW_WWW_USER_USERNAME" "airflow"
+append_if_not_exist "$SCHEDULER_ENV_FILE" "_AIRFLOW_WWW_USER_PASSWORD" "airflow"
+append_if_not_exist "$SCHEDULER_ENV_FILE" "POSTGRES_USER" "postgres"
+append_if_not_exist "$SCHEDULER_ENV_FILE" "POSTGRES_PASSWORD" "postgres"
+append_if_not_exist "$SCHEDULER_ENV_FILE" "PGADMIN_DEFAULT_EMAIL" "admin@admin.com"
+append_if_not_exist "$SCHEDULER_ENV_FILE" "PGADMIN_DEFAULT_PASSWORD" "admin"
+append_if_not_exist "$SCHEDULER_ENV_FILE" "POSTGRES_DB" "airflow"
+
+if [ -f "$DB_ENV_FILE" ] && [ -f "$SCHEDULER_ENV_FILE" ]; then
     print_status "success" "Environment files setup complete!"
-    print_status "info" "Remember to replace all 'PLEASE_FILL' placeholders with actual values"
+    print_status "info" "Files created:"
+    print_status "info" "- $DB_ENV_FILE"
+    print_status "info" "- $SCHEDULER_ENV_FILE"
 else
     print_status "error" "Some environment files failed to create"
     exit 1

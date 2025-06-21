@@ -51,8 +51,8 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.13"
-stpstone = "2.0.15"
-psycopg2-binary = "^2.9.3"
+stpstone = "2.0.19"
+psycopg2-binary = "2.9.10"
 apache-airflow = [{ version = ">=2.7.3,<4.0.0", python = ">=3.9,<3.13" }]
 python-dotenv = "1.1.0"
 

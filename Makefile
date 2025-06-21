@@ -27,8 +27,7 @@ docker_rm_rmi_airflow_env:
 	@docker rmi airflow-env:1.0 || true --force
 
 docker_airflow_down_no_cache: docker_rm_rmi_airflow_env
-	docker compose --env-file postgres_mktdata.env -f postgres_docker-compose.yml down -v --remove-orphans
-	docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml down -v --remove-orphans
+	docker compose --env-file scheduler_mktdata.env -f airflow_docker-compose.yml down -v --remove-orphans
 	docker system prune --volumes --force -a -f
 	docker network prune -f
 	docker volume prune -f
@@ -40,40 +39,36 @@ docker_airflow_down:
 	docker compose -f airflow_docker-compose.yml down
 	docker rm -f airflow-env:1.0
 
-run_compose_stack: check_docker
+# run services
+run_postgres:
+	bash cli/run_postgres.sh
+
+run_scheduler:  check_docker
 	export DOCKER_BUILDKIT=1
 	bash cli/kill_pids_ports.sh 5432 5433
 	docker build --no-cache -f airflow-env_dockerfile -t airflow-env:1.0 .
-	docker compose --env-file postgres_mktdata.env -f postgres_docker-compose.yml up -d
-	docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d || \
-	( \
-	  echo "=== INITIALIZATION LOGS ===" && \
-	  docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml logs airflow-init && \
-	  echo "=== API SERVER LOGS ===" && \
-	  docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml logs airflow-apiserver && \
-	  echo "=== ALL SERVICES LOGS ===" && \
-	  docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml logs && \
-	  false \
-	)
+	docker compose --env-file scheduler_mktdata.env -f airflow_docker-compose.yml up -d
 
-run_compose_stack_no_cache: check_docker docker_airflow_down_no_cache
+run_scheduler_no_cache: check_docker docker_airflow_down_no_cache
 	export DOCKER_BUILDKIT=1
 	bash cli/kill_pids_ports.sh 5432 5433
 	docker build --no-cache -f airflow-env_dockerfile -t airflow-env:1.0 .
-	docker compose --env-file postgres_mktdata.env -f postgres_docker-compose.yml up -d
-	docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml up -d || \
+	docker compose --env-file scheduler_mktdata.env -f airflow_docker-compose.yml up -d
+
+run_scheduler_no_cache_logs: check_docker docker_airflow_down_no_cache
+	export DOCKER_BUILDKIT=1
+	bash cli/kill_pids_ports.sh 5432 5433
+	docker build --no-cache -f airflow-env_dockerfile -t airflow-env:1.0 .
+	docker compose --env-file scheduler_mktdata.env -f airflow_docker-compose.yml up -d || \
 	( \
 	  echo "=== INITIALIZATION LOGS ===" && \
-	  docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml logs airflow-init && \
+	  docker compose --env-file scheduler_mktdata.env -f airflow_docker-compose.yml logs airflow-init && \
 	  echo "=== API SERVER LOGS ===" && \
-	  docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml logs airflow-apiserver && \
+	  docker compose --env-file scheduler_mktdata.env -f airflow_docker-compose.yml logs airflow-apiserver && \
 	  echo "=== ALL SERVICES LOGS ===" && \
-	  docker compose --env-file airflow_mktdata.env -f airflow_docker-compose.yml logs && \
+	  docker compose --env-file scheduler_mktdata.env -f airflow_docker-compose.yml logs && \
 	  false \
 	)
-
-test_postgres_env:
-	bash cli/test_postgres_env.sh
 
 # git
 precommit_update:

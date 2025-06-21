@@ -171,7 +171,7 @@ make --version
 
 3. **Set Up Credentials**
    ```bash
-   # Edit .env and data/postgres_mktdata.env
+   # Edit .env and data/db_mktdata.env
    # Replace PLEASE_FILL and fill@me.com with actual credentials
    ```
 
@@ -203,7 +203,7 @@ cd complete/path/to/project
 Edit the following files with your credentials:
 
 - **`.env`**: Main environment variables
-- **`data/postgres_mktdata.env`**: Database credentials
+- **`data/db_mktdata.env`**: Database credentials
 
 ⚠️ **Important**: Replace all `PLEASE_FILL` placeholders and `fill@me.com` examples with actual values.
 
@@ -291,7 +291,7 @@ make docker_airflow_up
 ### Database Connection Setup
 
 1. **Access pgAdmin**: Navigate to http://localhost:5433
-2. **Login**: Use credentials from `data/postgres_mktdata.env`
+2. **Login**: Use credentials from `data/db_mktdata.env`
 3. **Configure Server Connection**:
 
    <details>

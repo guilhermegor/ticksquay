@@ -10,7 +10,6 @@ from socket import gethostname
 
 from dotenv import load_dotenv
 from stpstone.utils.connections.databases.postgresql import PostgreSQLDB
-from stpstone.utils.parsers.folders import DirFilesManagement
 from stpstone.utils.parsers.yaml import reading_yaml
 from stpstone.utils.webhooks.slack import WebhookSlack
 
@@ -20,7 +19,7 @@ USER = getuser()
 HOSTNAME = gethostname()
 
 # load environment variables
-path_project = DirFilesManagement().find_project_root()
+path_project = os.getenv("PROJECT_ROOT")
 path_env = f"{path_project}/.env"
 load_dotenv(path_env)
 

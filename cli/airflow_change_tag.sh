@@ -66,7 +66,6 @@ check_python_compatibility() {
     fi
 }
 
-# Function to update docker-compose file
 update_docker_compose() {
     local url="https://airflow.apache.org/docs/apache-airflow/${AIRFLOW_VERSION}/docker-compose.yaml"
     print_status "info" "Downloading Airflow ${AIRFLOW_VERSION} docker-compose file from ${url}"
@@ -82,8 +81,19 @@ update_docker_compose() {
             echo "name: mktdata_scheduler"
             echo ""
             awk '/^[^#]/ {p=1} p' /tmp/airflow-docker-compose.yaml
-        } > airflow_docker-compose.yml
+        } > /tmp/airflow-docker-compose-modified.yaml
 
+        # Modify the AIRFLOW__CORE__LOAD_EXAMPLES setting
+        if grep -q "AIRFLOW__CORE__LOAD_EXAMPLES" /tmp/airflow-docker-compose-modified.yaml; then
+            sed -i "s/AIRFLOW__CORE__LOAD_EXAMPLES: 'true'/AIRFLOW__CORE__LOAD_EXAMPLES: 'false'/" /tmp/airflow-docker-compose-modified.yaml
+            print_status "success" "Changed AIRFLOW__CORE__LOAD_EXAMPLES to false"
+        else
+            # Add the setting if it doesn't exist (find the x-airflow-common section)
+            sed -i '/x-airflow-common:/a \      environment: &airflow_common_environment\n        AIRFLOW__CORE__LOAD_EXAMPLES: "false"' /tmp/airflow-docker-compose-modified.yaml
+            print_status "info" "Added AIRFLOW__CORE__LOAD_EXAMPLES: false to environment"
+        fi
+
+        mv /tmp/airflow-docker-compose-modified.yaml airflow_docker-compose.yml
         print_status "success" "Updated airflow_docker-compose.yml for version ${AIRFLOW_VERSION}"
     else
         print_status "error" "Failed to download docker-compose file"

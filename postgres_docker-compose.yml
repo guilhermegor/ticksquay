@@ -1,8 +1,8 @@
-name: mktdata_db
+name: mktdata_storage
 
 services:
-  postgres_mktdata:
-    container_name: postgres_mktdata
+  db_mktdata:
+    container_name: db_mktdata
     image: postgres:17.2
     # change permission of the directory /var/lib/postgresql/data to 0700
     #   - 0700: owner, the postgres user in this case - full permission
@@ -10,8 +10,8 @@ services:
     #   - /var/lib/postgresql/data: default directory where postgres stores its data
     command: >
       bash -c "
-        mkdir -p ~/Donwloads/data_mktdata_collector &&  # ensure host dir exists (bind mount)
-        chown -R 999:999 ~/Donwloads/data_mktdata_collector &&  # set postgresql permissions
+        mkdir -p ~/Donwloads/mktdata_storage &&  # ensure host dir exists (bind mount)
+        chown -R 999:999 ~/Donwloads/mktdata_storage &&  # set postgresql permissions
         chmod -R 0700 /var/lib/postgresql/data &&  # secure container data dir
         docker-entrypoint.sh postgres
       "
@@ -20,12 +20,12 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - PGDATA=/var/lib/postgresql/data
     volumes:
-      - ~/Donwloads/data_mktdata_collector:/var/lib/postgresql/data
+      - ~/Donwloads/mktdata_storage:/var/lib/postgresql/data
       - ./init:/docker-entrypoint-initdb.d:rw
     ports:
       - "5432:5432"
     networks:
-      - postgres_network
+      - shared_network
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
       interval: 10s
@@ -44,14 +44,15 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     depends_on:
-      - postgres_mktdata
+      - db_mktdata
     networks:
-      - postgres_network
+      - shared_network
     restart: no
 
 networks:
-  postgres_network:
+  shared_network:
     driver: bridge
+    name: shared_network
 
 volumes:
   postgres_data:

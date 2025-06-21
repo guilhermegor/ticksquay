@@ -1,0 +1,6 @@
+stpstone==2.0.23; python_full_version >= "3.9" and python_version < "3.13"
+python-dotenv==1.1.0; python_full_version >= "3.9" and python_version < "3.13"
+psycopg2-binary==2.9.9 ; python_full_version >= "3.9" and python_version < "3.13"
+apache-airflow==2.9.3; python_full_version >= "3.9" and python_version < "3.13"
+apache-airflow-providers-postgres==5.11.0; python_full_version >= "3.9" and python_version < "3.13"
+apache-airflow-providers-celery==3.4.0; python_full_version >= "3.9" and python_version < "3.13"

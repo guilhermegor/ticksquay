@@ -2,14 +2,14 @@
 
 [[package]]
 name = "a2wsgi"
-version = "1.10.9"
+version = "1.10.10"
 description = "Convert WSGI app to ASGI app or ASGI app to WSGI app."
 optional = false
 python-versions = ">=3.8.0"
 groups = ["main"]
 files = [
-    {file = "a2wsgi-1.10.9-py3-none-any.whl", hash = "sha256:fe4ca66b7c45c350374e46f1233468e9358432c62c1c465eda9b3864287be92d"},
-    {file = "a2wsgi-1.10.9.tar.gz", hash = "sha256:7ca30b71c69b688c3a19b911be5bc78506e1b7507768951ed7ed010e7b2164af"},
+    {file = "a2wsgi-1.10.10-py3-none-any.whl", hash = "sha256:d2b21379479718539dc15fce53b876251a0efe7615352dfe49f6ad1bc507848d"},
+    {file = "a2wsgi-1.10.10.tar.gz", hash = "sha256:a5bcffb52081ba39df0d5e9a884fc6f819d92e3a42389343ba77cbf809fe1f45"},
 ]
 
 [package.dependencies]
@@ -355,14 +355,14 @@ statsd = ["statsd (>=3.3.0)"]
 
 [[package]]
 name = "apache-airflow-providers-common-compat"
-version = "1.7.0"
+version = "1.7.1"
 description = "Provider package apache-airflow-providers-common-compat for Apache Airflow"
 optional = false
 python-versions = "~=3.9"
 groups = ["main"]
 files = [
-    {file = "apache_airflow_providers_common_compat-1.7.0-py3-none-any.whl", hash = "sha256:671428df8979962857246a158f56b5b6262001230fe798015fd709199d21ed05"},
-    {file = "apache_airflow_providers_common_compat-1.7.0.tar.gz", hash = "sha256:b7eddd9acb39e42641916ab570252c9a30ae23fe4b78c128639afdcae8df6eca"},
+    {file = "apache_airflow_providers_common_compat-1.7.1-py3-none-any.whl", hash = "sha256:a248a3a2c6dccce47ee0ed9a45e501e661f635ec20e9851ddb7e46ed26e05dd4"},
+    {file = "apache_airflow_providers_common_compat-1.7.1.tar.gz", hash = "sha256:eeabf0ea016ca5adc450a3e1cf94ff7ff7ec34854e3e2c60bd4fa3acbd63d1a7"},
 ]
 
 [package.dependencies]
@@ -393,14 +393,14 @@ openlineage = ["apache-airflow-providers-openlineage"]
 
 [[package]]
 name = "apache-airflow-providers-common-sql"
-version = "1.27.1"
+version = "1.27.2"
 description = "Provider package apache-airflow-providers-common-sql for Apache Airflow"
 optional = false
 python-versions = "~=3.9"
 groups = ["main"]
 files = [
-    {file = "apache_airflow_providers_common_sql-1.27.1-py3-none-any.whl", hash = "sha256:1c42dfc9e37e52880963ec5bf65a3c62469889bcc59df2acadab358bb1584a43"},
-    {file = "apache_airflow_providers_common_sql-1.27.1.tar.gz", hash = "sha256:72b25267c8b2969ba676b12bf74c49372150bc1b4ffef5e4093dd7ecc10311b7"},
+    {file = "apache_airflow_providers_common_sql-1.27.2-py3-none-any.whl", hash = "sha256:69a9f2d9a709394ec2ee3cd7c43dc731519cad19931f2ed48059b19393cd108b"},
+    {file = "apache_airflow_providers_common_sql-1.27.2.tar.gz", hash = "sha256:7cdc5cdf40a3e91e7b6079ef6eaea929ed0da78980b6afdba02c1011129fb756"},
 ]
 
 [package.dependencies]
@@ -432,14 +432,14 @@ apache-airflow-providers-common-compat = ">=1.6.1"
 
 [[package]]
 name = "apache-airflow-providers-standard"
-version = "1.2.0"
+version = "1.3.0"
 description = "Provider package apache-airflow-providers-standard for Apache Airflow"
 optional = false
 python-versions = "~=3.9"
 groups = ["main"]
 files = [
-    {file = "apache_airflow_providers_standard-1.2.0-py3-none-any.whl", hash = "sha256:9a19f0317356af4f931d1db5c226685c786112affe20a95fe8910451455f677f"},
-    {file = "apache_airflow_providers_standard-1.2.0.tar.gz", hash = "sha256:e8e8ea81dc7e346e0a686a1f3be9bf51f82fa5a901c2ba0082465120bb6b9495"},
+    {file = "apache_airflow_providers_standard-1.3.0-py3-none-any.whl", hash = "sha256:94259ca9ec18abb491c702e24621ef1162c7d4b8131101ed161a0f24cc38b8b8"},
+    {file = "apache_airflow_providers_standard-1.3.0.tar.gz", hash = "sha256:53eff0c34279ce5ece2ff5fb1401055dde7ae5c3a4e8acd1d90042ac3198d54e"},
 ]
 
 [package.dependencies]
@@ -560,20 +560,6 @@ typing-extensions = {version = ">=4", markers = "python_version < \"3.11\""}
 
 [package.extras]
 tests = ["mypy (>=0.800)", "pytest", "pytest-asyncio"]
-
-[[package]]
-name = "asyncio"
-version = "3.4.3"
-description = "reference implementation of PEP 3156"
-optional = false
-python-versions = "*"
-groups = ["main"]
-files = [
-    {file = "asyncio-3.4.3-cp33-none-win32.whl", hash = "sha256:b62c9157d36187eca799c378e572c969f0da87cd5fc42ca372d92cdb06e7e1de"},
-    {file = "asyncio-3.4.3-cp33-none-win_amd64.whl", hash = "sha256:c46a87b48213d7464f22d9a497b9eef8c1928b68320a2fa94240f969f6fec08c"},
-    {file = "asyncio-3.4.3-py3-none-any.whl", hash = "sha256:c4d18b22701821de07bd6aea8b53d21449ec0ec5680645e5317062ea21817d2d"},
-    {file = "asyncio-3.4.3.tar.gz", hash = "sha256:83360ff8bc97980e4ff25c964c7bd3923d333d177aa4f7fb736b019f26c7cb41"},
-]
 
 [[package]]
 name = "attrs"
@@ -1336,7 +1322,7 @@ files = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {file = "colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
 ]
-markers = {main = "platform_system == \"Windows\" or sys_platform == \"win32\"", dev = "os_name == \"nt\""}
+markers = {main = "sys_platform == \"win32\" or platform_system == \"Windows\"", dev = "os_name == \"nt\""}
 
 [[package]]
 name = "colorlog"
@@ -1571,6 +1557,17 @@ pymeeus = ">=0.3.13,<=1"
 dev = ["black", "build", "isort", "pylint"]
 docs = ["myst-parser", "sphinx", "sphinx-rtd-theme"]
 tests = ["coverage"]
+
+[[package]]
+name = "countryinfo"
+version = "0.1.2"
+description = "countryinfo is a python module for returning data about countries, ISO info and states/provinces within them."
+optional = false
+python-versions = ">3.0.0"
+groups = ["main"]
+files = [
+    {file = "countryinfo-0.1.2-py3-none-any.whl", hash = "sha256:fd518b3fd8899f6520518320ac17b67bf410c7db5044c61cb191f802bb85c34d"},
+]
 
 [[package]]
 name = "coverage"
@@ -4337,14 +4334,14 @@ plotting = ["matplotlib (>=0.91)"]
 
 [[package]]
 name = "narwhals"
-version = "1.43.0"
+version = "1.42.1"
 description = "Extremely lightweight compatibility layer between dataframe libraries"
 optional = false
-python-versions = ">=3.9"
+python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "narwhals-1.43.0-py3-none-any.whl", hash = "sha256:7accb0eae172f5697ada3635f46221dfcc98e9419f694df628c0745526d5c514"},
-    {file = "narwhals-1.43.0.tar.gz", hash = "sha256:5a28119401fccb4d344704f806438a983bb0a5b3f4a638760d25b1d521a18a79"},
+    {file = "narwhals-1.42.1-py3-none-any.whl", hash = "sha256:7a270d44b94ccdb277a799ae890c42e8504c537c1849f195eb14717c6184977a"},
+    {file = "narwhals-1.42.1.tar.gz", hash = "sha256:50a5635b11aeda98cf9c37e839fd34b0a24159f59a4dfae930290ad698320494"},
 ]
 
 [package.extras]
@@ -4353,7 +4350,7 @@ dask = ["dask[dataframe] (>=2024.8)"]
 duckdb = ["duckdb (>=1.0)"]
 ibis = ["ibis-framework (>=6.0.0)", "packaging", "pyarrow-hotfix", "rich"]
 modin = ["modin"]
-pandas = ["pandas (>=1.1.3)"]
+pandas = ["pandas (>=0.25.3)"]
 polars = ["polars (>=0.20.3)"]
 pyarrow = ["pyarrow (>=11.0.0)"]
 pyspark = ["pyspark (>=3.5.0)"]
@@ -6092,18 +6089,18 @@ typing-extensions = ">=4.6.0,<4.7.0 || >4.7.0"
 
 [[package]]
 name = "pydot"
-version = "4.0.0"
+version = "4.0.1"
 description = "Python interface to Graphviz's Dot"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "pydot-4.0.0-py3-none-any.whl", hash = "sha256:cf86e13a6cfe2a96758a9702537f77e0ac1368db8ef277b4d3b34473ea425c97"},
-    {file = "pydot-4.0.0.tar.gz", hash = "sha256:12f16493337cade2f7631b87c8ccd299ba2e251f3ee5d0732a058df2887afe97"},
+    {file = "pydot-4.0.1-py3-none-any.whl", hash = "sha256:869c0efadd2708c0be1f916eb669f3d664ca684bc57ffb7ecc08e70d5e93fee6"},
+    {file = "pydot-4.0.1.tar.gz", hash = "sha256:c2148f681c4a33e08bf0e26a9e5f8e4099a82e0e2a068098f32ce86577364ad5"},
 ]
 
 [package.dependencies]
-pyparsing = ">=3.0.9"
+pyparsing = ">=3.1.0"
 
 [package.extras]
 dev = ["chardet", "parameterized", "pydot[lint]", "pydot[types]"]
@@ -6448,14 +6445,14 @@ files = [
 
 [[package]]
 name = "pytest"
-version = "8.4.0"
+version = "8.4.1"
 description = "pytest: simple powerful testing with Python"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "pytest-8.4.0-py3-none-any.whl", hash = "sha256:f40f825768ad76c0977cbacdf1fd37c6f7a468e460ea6a0636078f8972d4517e"},
-    {file = "pytest-8.4.0.tar.gz", hash = "sha256:14d920b48472ea0dbf68e45b96cd1ffda4705f33307dcc86c676c1b5104838a6"},
+    {file = "pytest-8.4.1-py3-none-any.whl", hash = "sha256:539c70ba6fcead8e78eebbf1115e8b589e7565830d7d006a8723f19ac8a0afb7"},
+    {file = "pytest-8.4.1.tar.gz", hash = "sha256:7c67fd69174877359ed9371ec3af8a3d2b04741818c51e5e99cc1742251fa93c"},
 ]
 
 [package.dependencies]
@@ -6604,14 +6601,14 @@ unidecode = ["Unidecode (>=1.1.1)"]
 
 [[package]]
 name = "pytz"
-version = "2025.1"
+version = "2025.2"
 description = "World timezone definitions, modern and historical"
 optional = false
 python-versions = "*"
 groups = ["main"]
 files = [
-    {file = "pytz-2025.1-py2.py3-none-any.whl", hash = "sha256:89dd22dca55b46eac6eda23b2d72721bf1bdfef212645d81513ef5d03038de57"},
-    {file = "pytz-2025.1.tar.gz", hash = "sha256:c2db42be2a2518b28e65f9207c4d05e6ff547d1efa4086469ef855e4ab70178e"},
+    {file = "pytz-2025.2-py2.py3-none-any.whl", hash = "sha256:5ddf76296dd8c44c26eb8f4b6f35488f3ccbf6fbbd7adee0b7262d43f0ec2f00"},
+    {file = "pytz-2025.2.tar.gz", hash = "sha256:360b9e3dbb49a209c21ad61809c7fb453643e048b38924c765813546746e81c3"},
 ]
 
 [[package]]
@@ -8058,18 +8055,17 @@ docs = ["ipykernel", "jupyter-client", "matplotlib", "nbconvert", "nbformat", "n
 
 [[package]]
 name = "stpstone"
-version = "2.0.15"
+version = "2.0.19"
 description = "Solid financial ETL, analytics and utils with support to global markets."
 optional = false
 python-versions = "<3.14,>=3.9"
 groups = ["main"]
 files = [
-    {file = "stpstone-2.0.15-py3-none-any.whl", hash = "sha256:ac555311644f49c266e669bccca46d4a5ba0f9eb3df7426d4e5394db5cc3a220"},
-    {file = "stpstone-2.0.15.tar.gz", hash = "sha256:d4be42c9cd70f8a8dbdedcc02a957a1c74bcec98bd662dbd60e8a713b0a058aa"},
+    {file = "stpstone-2.0.19-py3-none-any.whl", hash = "sha256:d3e2dcaa6e0202a8bd68fa12ed8014d922e7d58623302179983f2d211145d223"},
+    {file = "stpstone-2.0.19.tar.gz", hash = "sha256:968e43305766297b54443da73434b2ff67243eda255a92d2380528e1f0d8a6d4"},
 ]
 
 [package.dependencies]
-asyncio = "3.4.3"
 backoff = "2.2.1"
 basicauth = "1.0.0"
 bcrypt = "4.3.0"
@@ -8077,6 +8073,7 @@ boto = "2.49.0"
 bs4 = "0.0.2"
 businesstimedelta = "1.0.1"
 chardet = "5.2.0"
+countryinfo = "0.1.2"
 cvxopt = "1.3.2"
 fitz = "0.0.1.dev2"
 ftfy = "6.3.1"
@@ -8097,7 +8094,6 @@ numpy-financial = "1.0.0"
 openai = "1.79.0"
 openpyxl = "3.1.5"
 pandas = "2.2.3"
-pathlib = "1.0.1"
 pdfplumber = "0.11.5"
 playwright = "1.52.0"
 plotly = "6.0.0"
@@ -8114,7 +8110,6 @@ pymysql = "1.1.1"
 pyodbc = "5.2.0"
 pypdf = "5.2.0"
 python-dateutil = "2.9.0.post0"
-pytz = "2025.1"
 pywin32 = {version = "308", markers = "sys_platform == \"win32\""}
 pyyaml = "6.0.2"
 requests = "2.32.3"
@@ -9530,4 +9525,4 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9,<3.13"
-content-hash = "7165b650993ae1506cee6274777888dfdbc917675afb3b74938b41205d7a97e6"
+content-hash = "757c6da20afdc7ddd0d2bb3c7ce9502d8d0a2c93ab9f29b61145f8d92cd5516f"
