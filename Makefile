@@ -77,11 +77,17 @@ run_scheduler_no_cache_logs: check_docker docker_airflow_down_no_cache
 	  docker compose --env-file .env -f airflow_docker-compose.yml logs && \
 	  false \
 	)
-	@echo "\n=== Checking stpstone version in scheduler container ==="
+	@echo "\n=== Checking /opt/airflow directory contents ==="
 	@SCHEDULER_CONTAINER=$$(docker ps --filter "name=airflow-scheduler" --format "{{.Names}}") && \
 	if [ -n "$$SCHEDULER_CONTAINER" ]; then \
 		echo "Found scheduler container: $$SCHEDULER_CONTAINER"; \
-		echo "Running version check..."; \
+		echo "Directory listing of /opt/airflow:"; \
+		docker exec $$SCHEDULER_CONTAINER ls -la /opt/airflow; \
+		echo "\n=== Checking .env file ==="; \
+		docker exec $$SCHEDULER_CONTAINER ls -la /opt/airflow/.env || echo ".env file not found"; \
+		echo "\n=== Checking environment variables ==="; \
+		docker exec $$SCHEDULER_CONTAINER printenv | grep -E "POSTGRES|AIRFLOW"; \
+		echo "\n=== Checking stpstone version ==="; \
 		docker exec $$SCHEDULER_CONTAINER python -c "import stpstone; print(f'stpstone version: {stpstone.__version__}')" || \
 		(echo "Failed to check stpstone version in container $$SCHEDULER_CONTAINER"; exit 1); \
 	else \

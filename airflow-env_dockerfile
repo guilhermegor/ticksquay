@@ -15,7 +15,6 @@ COPY --chown=airflow:root . /opt/airflow
 WORKDIR /opt/airflow
 
 ENV PYTHONPATH="${PYTHONPATH}:/opt/airflow" \
-    AIRFLOW_HOME="/opt/airflow" \
     AIRFLOW_PROJ_DIR="/opt/airflow"
 
 USER airflow

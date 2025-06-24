@@ -17,7 +17,7 @@ from stpstone.utils.webhooks.slack import WebhookSlack
 USER = getuser()
 HOSTNAME = gethostname()
 
-path_project = os.getenv("AIRFLOW_PROJ_DIR")
+path_project = os.environ.get("AIRFLOW_PROJ_DIR")
 path_env = f"{path_project}/.env"
 load_dotenv(path_env)
 

@@ -5,9 +5,9 @@ from airflow.decorators import dag, task
 from dotenv import load_dotenv
 from stpstone.ingestion.countries.br.taxation.irsbr_records import IRSBR
 from stpstone.utils.cals.handling_dates import DatesBR
-from stpstone.utils.parsers.dicts import Handlingdicts
+from stpstone.utils.parsers.dicts import HandlingDicts
 
-from config.global_slots import CLS_POSTGRES_RAW, YAML_USER_CFG
+from config.global_slots import CLS_POSTGRES_RAW, USER, YAML_USER_CFG
 
 
 env_paths = [
@@ -29,11 +29,12 @@ def get_default_args() -> dict[str, str | list]:
         raise ValueError("Environment variable LIST_EMAILS_ADDRESSES not set")
     str_emails = os.getenv("LIST_EMAILS_ADDRESSES").strip()
     dict_replc = {
-        "LIST_EMAILS_ADDRESSES": [email.strip() for email in str_emails.split(",")],
+        "owner": USER,
+        "list_email_addresses": [email.strip() for email in str_emails.split(",")],
         "start_date": DatesBR().curr_date,
         "end_date": DatesBR().curr_date,
     }
-    return Handlingdicts().fill_placeholders(YAML_USER_CFG["default_args_airflow"], dict_replc)
+    return HandlingDicts().fill_placeholders(YAML_USER_CFG["default_args_airflow"], dict_replc)
 
 
 @dag(
@@ -46,6 +47,46 @@ def get_default_args() -> dict[str, str | list]:
 )
 def irsbr_records_dag() -> None:
     """Orchestrate the ingestion of Brazilian tax system records."""
+
+    @task(task_id="verify_db_connection")
+    def verify_db_connection() -> bool:
+        """Verify PostgreSQL database connection is working."""
+        import os
+
+        from psycopg import connect
+        from stpstone.utils.loggs.create_logs import CreateLog
+
+        try:
+            conn = connect(
+                dbname=os.getenv("POSTGRES_DB"),
+                user=os.getenv("POSTGRES_USER"),
+                password=os.getenv("POSTGRES_PASSWORD"),
+                host=os.getenv("POSTGRES_HOST"),
+                port=int(os.getenv("POSTGRES_PORT")),
+            )
+
+            with conn.cursor() as cur:
+                cur.execute("SELECT 1")
+                result = cur.fetchone()
+                if result[0] != 1:
+                    raise ValueError("Test query returned unexpected result")
+
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT schema_name
+                    FROM information_schema.schemata
+                    WHERE schema_name = %s
+                """, (os.getenv("POSTGRES_SCHEMA", "raw"),))
+                if not cur.fetchone():
+                    raise ValueError(f"Schema '{os.getenv('POSTGRES_SCHEMA', 'raw')}' not found")
+
+            conn.close()
+            return True
+
+        except Exception as e:
+            error_msg = f"Database connection failed: {str(e)}"
+            CreateLog().error(None, error_msg)
+            raise ValueError(error_msg) from e
 
     @task(task_id="initialize_irsbr")
     def initialize_irsbr() -> IRSBR:
@@ -100,7 +141,8 @@ def irsbr_records_dag() -> None:
     reference_data = ingest_reference_data(irsbr_client)
 
     # define workflow
-    irsbr_client >> companies >> businesses >> tax_system >> shareholders
+    verify_db_connection >> irsbr_client
+    irsbr_client >> [companies, businesses, tax_system, shareholders]
     shareholders >> reference_data
 
 

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Color palette for logging
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -23,14 +22,12 @@ print_status() {
     esac
 }
 
-# Function to create backup directory
 create_backup_dir() {
     BACKUP_DIR="backup/$(date +'%Y%m%d_%H%M%S')"
     mkdir -p "$BACKUP_DIR"
     print_status "info" "Created backup directory: $BACKUP_DIR"
 }
 
-# Function to validate and set Airflow version
 set_airflow_version() {
     AIRFLOW_VERSION=$1
     if [[ ! $AIRFLOW_VERSION =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
@@ -40,21 +37,20 @@ set_airflow_version() {
     print_status "success" "Using Airflow version ${AIRFLOW_VERSION}"
 }
 
-# Function to check Python version and determine compatible Airflow version
 check_python_compatibility() {
     PYTHON_MINOR=$(python -c "import sys; print(sys.version_info.minor)")
     PYTHON_MAJOR=$(python -c "import sys; print(sys.version_info.major)")
 
     if [[ $PYTHON_MAJOR -eq 3 ]]; then
         if [[ $PYTHON_MINOR -ge 12 ]]; then
-            # Python 3.12+ only compatible with Airflow 3.0+
+            # python 3.12+ only compatible with Airflow 3.0+
             if [[ ! $AIRFLOW_VERSION =~ ^3\. ]]; then
                 print_status "error" "Python 3.12+ requires Airflow 3.0+, but got ${AIRFLOW_VERSION}"
                 exit 1
             fi
             AIRFLOW_CONSTRAINT=">=3.0.0"
         else
-            # Python 3.9-3.11 compatible with Airflow 2.7+
+            # python 3.9-3.11 compatible with Airflow 2.7+
             if [[ $AIRFLOW_VERSION =~ ^3\. ]]; then
                 print_status "warning" "Airflow 3.0+ is compatible with Python 3.12+, but using Python 3.${PYTHON_MINOR}"
             fi
@@ -83,14 +79,22 @@ update_docker_compose() {
             awk '/^[^#]/ {p=1} p' /tmp/airflow-docker-compose.yaml
         } > /tmp/airflow-docker-compose-modified.yaml
 
-        # Modify the AIRFLOW__CORE__LOAD_EXAMPLES setting
+        # modify the AIRFLOW__CORE__LOAD_EXAMPLES setting
         if grep -q "AIRFLOW__CORE__LOAD_EXAMPLES" /tmp/airflow-docker-compose-modified.yaml; then
             sed -i "s/AIRFLOW__CORE__LOAD_EXAMPLES: 'true'/AIRFLOW__CORE__LOAD_EXAMPLES: 'false'/" /tmp/airflow-docker-compose-modified.yaml
             print_status "success" "Changed AIRFLOW__CORE__LOAD_EXAMPLES to false"
         else
-            # Add the setting if it doesn't exist (find the x-airflow-common section)
+            # add the setting if it doesn't exist (find the x-airflow-common section)
             sed -i '/x-airflow-common:/a \      environment: &airflow_common_environment\n        AIRFLOW__CORE__LOAD_EXAMPLES: "false"' /tmp/airflow-docker-compose-modified.yaml
             print_status "info" "Added AIRFLOW__CORE__LOAD_EXAMPLES: false to environment"
+        fi
+
+        # add .env volume mount after plugins volume
+        if grep -q "plugins:/opt/airflow/plugins" /tmp/airflow-docker-compose-modified.yaml; then
+            sed -i '/- \${AIRFLOW_PROJ_DIR:-.}\/plugins:\/opt\/airflow\/plugins/a \      - \${AIRFLOW_PROJ_DIR:-.}\/.env:\/opt\/airflow\/.env' /tmp/airflow-docker-compose-modified.yaml
+            print_status "success" "Added .env volume mount"
+        else
+            print_status "warning" "Could not find plugins volume to add .env volume after"
         fi
 
         mv /tmp/airflow-docker-compose-modified.yaml airflow_docker-compose.yml
@@ -101,7 +105,6 @@ update_docker_compose() {
     fi
 }
 
-# Function to update Dockerfile
 update_dockerfile() {
     PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
 
@@ -117,7 +120,6 @@ update_dockerfile() {
     fi
 }
 
-# Function to install requirements
 install_requirements() {
     if [ -f "requirements.txt" ]; then
         print_status "info" "Installing dependencies from requirements.txt"
@@ -133,15 +135,14 @@ install_requirements() {
     fi
 }
 
-# Function to update Poetry dependencies with version-specific constraints
 update_poetry_dependencies() {
-    # Verify poetry is available
+    # verify if poetry is available
     if ! python -m poetry --version >/dev/null 2>&1; then
         print_status "error" "Poetry not found. Please ensure it's included in requirements.txt"
         exit 1
     fi
 
-    # Update dependencies
+    # update dependencies
     print_status "info" "Updating dependencies..."
     if python -m poetry update; then
         print_status "success" "Dependencies updated"
@@ -150,7 +151,7 @@ update_poetry_dependencies() {
         exit 1
     fi
 
-    # Generate lock file
+    # generate lock file
     print_status "info" "Generating lock file..."
     if python -m poetry lock; then
         print_status "success" "Lock file generated"
@@ -160,7 +161,6 @@ update_poetry_dependencies() {
     fi
 }
 
-# Main function
 main() {
     if [ -z "$1" ]; then
         print_status "error" "Airflow version argument required"
@@ -176,15 +176,12 @@ main() {
     update_docker_compose
     update_dockerfile
 
-    # Install all requirements (including poetry)
     install_requirements
 
-    # Update poetry dependencies with version-specific constraints
     update_poetry_dependencies
 
     print_status "success" "Configuration update completed"
     print_status "info" "Backups stored in: $BACKUP_DIR"
 }
 
-# Execute
 main "$1"

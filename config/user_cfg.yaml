@@ -1,6 +1,6 @@
 # METADATA: https://airflow.apache.org/docs/apache-airflow/1.10.9/tutorial.html
 default_args_airflow:
-  owner: guilhermegor
+  owner: "{{owner}}"
   # run task regardless of previous tasks success/failure
   depends_on_past: False
   # email addresses for notification
@@ -18,7 +18,7 @@ default_args_airflow:
   # backoff factor for exporential backoff
   backoff_factor: 1
   # maximum retry delay
-  max_retry_delay: 1 day
+  max_retry_delay: 86400
   start_date: "{{start_date}}"
   end_date: "{{end_date}}"
   # check cron scheduler at: https://crontab.guru/
@@ -31,9 +31,9 @@ default_args_airflow:
   # default view of dag: graph or tree
   default_view: graph
   # timeout for the whole dag to run
-  dagrun_timeout: 01:00:00
+  dagrun_timeout: 7200
   # service level agreement for the dag to run (SLA)
-  sla: 02:00:00
+  sla: 7200
   # maximum active runs, of the same dag, at the same time
   max_active_runs: 1
   # callback to trigger when SLA is missed
