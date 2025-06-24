@@ -18,16 +18,16 @@ airflow_change_tag:
 airflow_matrix_test_versions:
 	bash cli/airflow_matrix_test_versions.sh
 
-# docker compose stack
+# clean compose stack
 check_docker:
 	bash cli/docker_init.sh
 
 docker_rm_rmi_airflow_env:
-	@docker ps -a --filter "name=airflow-env" -q | grep -q . && docker rm airflow-env || true
-	@docker rmi airflow-env:1.0 || true --force
+	@docker ps -a --filter "name=airflow-xpn" -q | grep -q . && docker rm airflow-xpn || true
+	@docker rmi airflow-xpn:1.0 || true --force
 
 docker_airflow_down_no_cache: docker_rm_rmi_airflow_env
-	docker compose --env-file scheduler_mktdata.env -f airflow_docker-compose.yml down -v --remove-orphans
+	docker compose --env-file .env -f airflow_docker-compose.yml down -v --remove-orphans
 	docker system prune --volumes --force -a -f
 	docker network prune -f
 	docker volume prune -f
@@ -37,38 +37,61 @@ docker_airflow_down_no_cache: docker_rm_rmi_airflow_env
 docker_airflow_down:
 	docker compose -f postgres_docker-compose.yml down
 	docker compose -f airflow_docker-compose.yml down
-	docker rm -f airflow-env:1.0
+	docker rm -f airflow-xpn:1.0
+
+docker_postgres_down:
+	docker compose -f postgres_docker-compose.yml down -v
+	rm -rf ~/Downloads/mktdata_storage
+
+clean_ports:
+	bash cli/kill_pids_ports.sh 5432 5433
 
 # run services
-run_postgres:
+run_db:
 	bash cli/run_postgres.sh
 
-run_scheduler:  check_docker
+check_db_creation:
+	docker exec -it postgres_mktdata psql -U postgres -c "\l"
+	docker exec -it postgres_mktdata psql -U postgres -d mktdata_collector -c "\dn+"
+
+run_scheduler: check_docker
 	export DOCKER_BUILDKIT=1
-	bash cli/kill_pids_ports.sh 5432 5433
-	docker build --no-cache -f airflow-env_dockerfile -t airflow-env:1.0 .
-	docker compose --env-file scheduler_mktdata.env -f airflow_docker-compose.yml up -d
+	docker build --no-cache -f airflow-env_dockerfile -t airflow-xpn:1.0 .
+	docker compose --env-file .env -f airflow_docker-compose.yml up -d
 
 run_scheduler_no_cache: check_docker docker_airflow_down_no_cache
 	export DOCKER_BUILDKIT=1
-	bash cli/kill_pids_ports.sh 5432 5433
-	docker build --no-cache -f airflow-env_dockerfile -t airflow-env:1.0 .
-	docker compose --env-file scheduler_mktdata.env -f airflow_docker-compose.yml up -d
+	docker build --no-cache -f airflow-env_dockerfile -t airflow-xpn:1.0 .
+	docker compose --env-file .env -f airflow_docker-compose.yml up -d
 
 run_scheduler_no_cache_logs: check_docker docker_airflow_down_no_cache
 	export DOCKER_BUILDKIT=1
-	bash cli/kill_pids_ports.sh 5432 5433
-	docker build --no-cache -f airflow-env_dockerfile -t airflow-env:1.0 .
-	docker compose --env-file scheduler_mktdata.env -f airflow_docker-compose.yml up -d || \
+	docker build --no-cache -f airflow-env_dockerfile -t airflow-xpn:1.0 .
+	docker compose --env-file .env -f airflow_docker-compose.yml up -d || \
 	( \
 	  echo "=== INITIALIZATION LOGS ===" && \
-	  docker compose --env-file scheduler_mktdata.env -f airflow_docker-compose.yml logs airflow-init && \
+	  docker compose --env-file .env -f airflow_docker-compose.yml logs airflow-init && \
 	  echo "=== API SERVER LOGS ===" && \
-	  docker compose --env-file scheduler_mktdata.env -f airflow_docker-compose.yml logs airflow-apiserver && \
+	  docker compose --env-file .env -f airflow_docker-compose.yml logs airflow-apiserver && \
 	  echo "=== ALL SERVICES LOGS ===" && \
-	  docker compose --env-file scheduler_mktdata.env -f airflow_docker-compose.yml logs && \
+	  docker compose --env-file .env -f airflow_docker-compose.yml logs && \
 	  false \
 	)
+	@echo "\n=== Checking stpstone version in scheduler container ==="
+	@SCHEDULER_CONTAINER=$$(docker ps --filter "name=airflow-scheduler" --format "{{.Names}}") && \
+	if [ -n "$$SCHEDULER_CONTAINER" ]; then \
+		echo "Found scheduler container: $$SCHEDULER_CONTAINER"; \
+		echo "Running version check..."; \
+		docker exec $$SCHEDULER_CONTAINER python -c "import stpstone; print(f'stpstone version: {stpstone.__version__}')" || \
+		(echo "Failed to check stpstone version in container $$SCHEDULER_CONTAINER"; exit 1); \
+	else \
+		echo "Could not find running airflow-scheduler container"; \
+		echo "Current running containers:"; \
+		docker ps --format "table {{.Names}}\t{{.Status}}"; \
+		exit 1; \
+	fi
+
+run_stack_no_cache_logs: docker_airflow_down_no_cache docker_postgres_down clean_ports run_db run_scheduler_no_cache_logs
 
 # git
 precommit_update:

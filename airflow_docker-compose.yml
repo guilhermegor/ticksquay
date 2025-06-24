@@ -57,6 +57,7 @@ x-airflow-common:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    MARKET_DATA_DB_CONN: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres_mktdata/${POSTGRES_DB}
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
@@ -87,6 +88,13 @@ x-airflow-common:
     postgres:
       condition: service_healthy
 
+networks:
+  airflow_internal_network:
+    driver: bridge
+  shared_network:
+    external: true
+    name: shared_network
+
 services:
   postgres:
     image: postgres:13
@@ -96,6 +104,10 @@ services:
       POSTGRES_DB: airflow
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
+    networks:
+      - airflow_internal_network
+      - shared_network
+    container_name: postgres
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 10s
@@ -115,10 +127,16 @@ services:
       timeout: 30s
       retries: 50
       start_period: 30s
+    networks:
+      - airflow_internal_network
+      - shared_network
     restart: always
 
   airflow-webserver:
     <<: *airflow-common
+    networks:
+      - airflow_internal_network
+      - shared_network
     command: webserver
     ports:
       - "8080:8080"
@@ -136,6 +154,9 @@ services:
 
   airflow-scheduler:
     <<: *airflow-common
+    networks:
+      - airflow_internal_network
+      - shared_network
     command: scheduler
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8974/health"]
@@ -151,6 +172,9 @@ services:
 
   airflow-worker:
     <<: *airflow-common
+    networks:
+      - airflow_internal_network
+      - shared_network
     command: celery worker
     healthcheck:
       # yamllint disable rule:line-length
@@ -189,6 +213,9 @@ services:
 
   airflow-init:
     <<: *airflow-common
+    networks:
+      - airflow_internal_network
+      - shared_network
     entrypoint: /bin/bash
     # yamllint disable rule:line-length
     command:

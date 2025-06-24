@@ -2,182 +2,107 @@
 import os
 
 from airflow.decorators import dag, task
+from dotenv import load_dotenv
 from stpstone.ingestion.countries.br.taxation.irsbr_records import IRSBR
 from stpstone.utils.cals.handling_dates import DatesBR
-from stpstone.utils.parsers.dicts import HandlingDicts
+from stpstone.utils.parsers.dicts import Handlingdicts
 
-from config.global_slots import CLS_POSTGRESQL_RAW, YAML_USER_CFG
+from config.global_slots import CLS_POSTGRES_RAW, YAML_USER_CFG
+
+
+env_paths = [
+    os.path.join(os.getenv("AIRFLOW_PROJ_DIR", "/opt/airflow"), ".env"),
+    "/opt/airflow/.env",
+    ".env"
+]
+
+for path in env_paths:
+    if os.path.exists(path):
+        load_dotenv(path)
+        break
+
+def get_default_args() -> dict[str, str | list]:
+    """Prepare and validate default arguments for the DAG."""
+    if not YAML_USER_CFG.get("default_args_airflow"):
+        raise ValueError("Missing 'default_args_airflow' in YAML configuration")
+    if not os.getenv("LIST_EMAILS_ADDRESSES"):
+        raise ValueError("Environment variable LIST_EMAILS_ADDRESSES not set")
+    str_emails = os.getenv("LIST_EMAILS_ADDRESSES").strip()
+    dict_replc = {
+        "LIST_EMAILS_ADDRESSES": [email.strip() for email in str_emails.split(",")],
+        "start_date": DatesBR().curr_date,
+        "end_date": DatesBR().curr_date,
+    }
+    return Handlingdicts().fill_placeholders(YAML_USER_CFG["default_args_airflow"], dict_replc)
 
 
 @dag(
     dag_id="irsbr",
-    description="DAG for ingesting IRS BR records",
+    description="DAG for ingesting IRS BR records into PostgreSQL",
     schedule_interval="@daily",
     catchup=False,
     tags=["taxation", "brazil", "data_ingestion"],
-    default_args=HandlingDicts().fill_placeholders(
-        YAML_USER_CFG["default_args_airflow"],
-        {
-            "list_emails_addresses": os.getenv("LIST_EMAILS_ADDRESSES"),
-            "start_date": DatesBR().curr_date,
-            "end_date": DatesBR().curr_date,
-        },
-    ),
+    default_args=get_default_args(),
 )
 def irsbr_records_dag() -> None:
-    """Define workflow for IRSBR records data ingestion.
+    """Orchestrate the ingestion of Brazilian tax system records."""
 
-    This DAG orchestrates the ingestion of IRS BR (Brazilian tax system) records
-    into a PostgreSQL database. It handles multiple data categories including
-    companies, businesses, shareholders, and tax-related metadata.
+    @task(task_id="initialize_irsbr")
+    def initialize_irsbr() -> IRSBR:
+        """Initialize IRSBR client with database connection."""
+        return IRSBR(session=None, cls_db=CLS_POSTGRES_RAW)
 
-    Notes
-    -----
-    - The DAG runs daily and does not backfill missed executions (`catchup=False`).
-    - All tasks are sequential, with dependencies explicitly defined.
-    - Email alerts are configured via `LIST_EMAILS_ADDRESSES` in the environment.
-    """
+    @task(task_id="ingest_companies")
+    def ingest_companies(irsbr: IRSBR) -> None:
+        """Ingest company data."""
+        irsbr.source("companies", bl_fetch=False)
 
-    @task(task_id="class_")
-    def class_() -> IRSBR:
-        """Initialize and return an IRSBR instance for data ingestion.
+    @task(task_id="ingest_businesses")
+    def ingest_businesses(irsbr: IRSBR) -> None:
+        """Ingest business entities data."""
+        irsbr.source("businesses", bl_fetch=False)
 
-        Returns
-        -------
-        IRSBR
-            Configured instance of the IRSBR class with database connection.
-        """
-        return IRSBR(session=None, cls_db=CLS_POSTGRESQL_RAW)
+    @task(task_id="ingest_taxation_system")
+    def ingest_taxation_system(irsbr: IRSBR) -> None:
+        """Ingest simplified taxation system records."""
+        irsbr.source("simplified_taxation_system", bl_fetch=False)
 
-    @task(task_id="companies")
-    def companies(cls_: IRSBR) -> None:
-        """Ingest company data from IRS BR.
+    @task(task_id="ingest_shareholders")
+    def ingest_shareholders(irsbr: IRSBR) -> None:
+        """Ingest shareholder information."""
+        irsbr.source("shareholders", bl_fetch=False)
 
-        Parameters
-        ----------
-        cls_ : IRSBR
-            IRSBR instance with database connection and ingestion methods.
-        """
-        _ = cls_.source("companies", bl_fetch=False)
+    @task(task_id="ingest_reference_data")
+    def ingest_reference_data(irsbr: IRSBR) -> None:
+        """Ingest all reference data in parallel."""
+        reference_tasks = [
+            ("countries", "country_refecountriesence"),
+            ("cities", "cities"),
+            ("shareholders_education", "shareholders_education"),
+            ("legal_form", "legal_form"),
+            ("ncea", "ncea"),
+            ("registration_status", "registration_status")
+        ]
 
-    @task(task_id="businesses")
-    def businesses(cls_: IRSBR) -> None:
-        """Ingest business entity data from IRS BR.
+        for source_name, task_id in reference_tasks:
+            @task(task_id=task_id)
+            def ingest_reference(source: str, irsbr_instance: IRSBR) -> None:
+                irsbr_instance.source(source, bl_fetch=False)
 
-        Parameters
-        ----------
-        cls_ : IRSBR
-            IRSBR instance with database connection and ingestion methods.
-        """
-        cls_.source("businesses", bl_fetch=False)
-
-    @task(task_id="simplified_taxation_system")
-    def simplified_taxation_system(cls_: IRSBR) -> None:
-        """Ingest simplified taxation system records.
-
-        Parameters
-        ----------
-        cls_ : IRSBR
-            IRSBR instance with database connection and ingestion methods.
-        """
-        cls_.source("simplified_taxation_system", bl_fetch=False)
-
-    @task(task_id="shareholders")
-    def shareholders(cls_: IRSBR) -> None:
-        """Ingest shareholder information from IRS BR.
-
-        Parameters
-        ----------
-        cls_ : IRSBR
-            IRSBR instance with database connection and ingestion methods.
-        """
-        cls_.source("shareholders", bl_fetch=False)
-
-    @task(task_id="countries")
-    def countries(cls_: IRSBR) -> None:
-        """Ingest country reference data from IRS BR.
-
-        Parameters
-        ----------
-        cls_ : IRSBR
-            IRSBR instance with database connection and ingestion methods.
-        """
-        cls_.source("countries", bl_fetch=False)
-
-    @task(task_id="cities")
-    def cities(cls_: IRSBR) -> None:
-        """Ingest city reference data from IRS BR.
-
-        Parameters
-        ----------
-        cls_ : IRSBR
-            IRSBR instance with database connection and ingestion methods.
-        """
-        cls_.source("cities", bl_fetch=False)
-
-    @task(task_id="shareholders_education")
-    def shareholders_education(cls_: IRSBR) -> None:
-        """Ingest shareholder education level data.
-
-        Parameters
-        ----------
-        cls_ : IRSBR
-            IRSBR instance with database connection and ingestion methods.
-        """
-        cls_.source("shareholders_education", bl_fetch=False)
-
-    @task(task_id="legal_form")
-    def legal_form(cls_: IRSBR) -> None:
-        """Ingest legal entity classification data.
-
-        Parameters
-        ----------
-        cls_ : IRSBR
-            IRSBR instance with database connection and ingestion methods.
-        """
-        cls_.source("legal_form", bl_fetch=False)
-
-    @task(task_id="ncea")
-    def ncea(cls_: IRSBR) -> None:
-        """Ingest NCEA (National Classification of Economic Activities) data.
-
-        Parameters
-        ----------
-        cls_ : IRSBR
-            IRSBR instance with database connection and ingestion methods.
-        """
-        cls_.source("ncea", bl_fetch=False)
-
-    @task(task_id="registration_status")
-    def registration_status(cls_: IRSBR) -> None:
-        """Ingest company registration status data.
-
-        Parameters
-        ----------
-        cls_ : IRSBR
-            IRSBR instance with database connection and ingestion methods.
-        """
-        cls_.source("registration_status", bl_fetch=False)
+            ingest_reference(source_name, irsbr)
 
     # task dependencies
-    cls_instance = class_()
-    companies_instance = companies(cls_instance)
-    businesses_instance = businesses(cls_instance)
-    simplified_taxation_system_instance = simplified_taxation_system(cls_instance)
-    shareholders_instance = shareholders(cls_instance)
-    countries_instance = countries(cls_instance)
-    cities_instance = cities(cls_instance)
-    shareholders_education_instance = shareholders_education(cls_instance)
-    legal_form_instance = legal_form(cls_instance)
-    ncea_instance = ncea(cls_instance)
-    registration_status_instance = registration_status(cls_instance)
+    irsbr_client = initialize_irsbr()
+    companies = ingest_companies(irsbr_client)
+    businesses = ingest_businesses(irsbr_client)
+    tax_system = ingest_taxation_system(irsbr_client)
+    shareholders = ingest_shareholders(irsbr_client)
+    reference_data = ingest_reference_data(irsbr_client)
 
-    cls_instance >> companies_instance >> businesses_instance \
-        >> simplified_taxation_system_instance >> shareholders_instance \
-        >> countries_instance >> cities_instance \
-        >> shareholders_education_instance \
-        >> legal_form_instance >> ncea_instance \
-        >> registration_status_instance
+    # define workflow
+    irsbr_client >> companies >> businesses >> tax_system >> shareholders
+    shareholders >> reference_data
 
 
-dag = irsbr_records_dag()
+# instantiate the DAG
+irsbr_dag = irsbr_records_dag()

@@ -10,14 +10,15 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-USER airflow
-
 COPY --chown=airflow:root . /opt/airflow
 
 WORKDIR /opt/airflow
 
-ENV PYTHONPATH="${PYTHONPATH}:/opt/airflow"
-ENV PROJECT_ROOT="/opt/airflow"
+ENV PYTHONPATH="${PYTHONPATH}:/opt/airflow" \
+    AIRFLOW_HOME="/opt/airflow" \
+    AIRFLOW_PROJ_DIR="/opt/airflow"
+
+USER airflow
 
 RUN pip install --upgrade pip && \
     pip install -r requirements-airflow.txt

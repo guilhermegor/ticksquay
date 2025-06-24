@@ -1,4 +1,4 @@
-stpstone==2.0.23; python_full_version >= "3.9" and python_version < "3.13"
+stpstone==2.0.29; python_full_version >= "3.9" and python_version < "3.13"
 python-dotenv==1.1.0; python_full_version >= "3.9" and python_version < "3.13"
 psycopg2-binary==2.9.9 ; python_full_version >= "3.9" and python_version < "3.13"
 apache-airflow==2.9.3; python_full_version >= "3.9" and python_version < "3.13"

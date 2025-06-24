@@ -14,20 +14,16 @@ from stpstone.utils.parsers.yaml import reading_yaml
 from stpstone.utils.webhooks.slack import WebhookSlack
 
 
-# get user and hostname
 USER = getuser()
 HOSTNAME = gethostname()
 
-# load environment variables
-path_project = os.getenv("PROJECT_ROOT")
+path_project = os.getenv("AIRFLOW_PROJ_DIR")
 path_env = f"{path_project}/.env"
 load_dotenv(path_env)
 
-# user configurations
 path_base = os.path.dirname(os.path.realpath(__file__))
 YAML_USER_CFG = reading_yaml(os.path.join(path_base, "user_cfg.yaml"))
 
-# webhooks
 YAML_WEBHOOKS = reading_yaml(os.path.join(path_base, "webhooks.yaml"))
 CLS_WEBHOOK_SLACK = WebhookSlack(
     os.getenv("SLACK_URL"),
@@ -36,12 +32,15 @@ CLS_WEBHOOK_SLACK = WebhookSlack(
     os.getenv("SLACK_ICON_EMOJI"),
 )
 
-# database connectors
-CLS_POSTGRESQL_RAW = PostgreSQLDB(
-    "mktdata_collector",
-    os.getenv("POSTGRESQL_USERNAME"),
+if not all([os.getenv(x) is not None for x in [
+    "POSTGRES_DB", "POSTGRES_USER", "POSTGRES_PASSWORD", "POSTGRES_HOST", "POSTGRES_PORT"
+]]):
+    raise ValueError("Environment variables for PostgreSQL not set, please check your .env file")
+CLS_POSTGRES_RAW = PostgreSQLDB(
+    os.getenv("POSTGRES_DB"),
+    os.getenv("POSTGRES_USER"),
     os.getenv("POSTGRES_PASSWORD"),
-    os.getenv("POSTGRESQL_HOST"),
-    os.getenv("POSTGRESQL_PORT"),
-    "RAW",
+    os.getenv("POSTGRES_HOST"),
+    int(os.getenv("POSTGRES_PORT")),
+    "raw",
 )

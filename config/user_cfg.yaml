@@ -1,25 +1,26 @@
+# METADATA: https://airflow.apache.org/docs/apache-airflow/1.10.9/tutorial.html
 default_args_airflow:
   owner: guilhermegor
   # run task regardless of previous tasks success/failure
   depends_on_past: False
   # email addresses for notification
-  email:
+  email: "{{list_email_addresses}}"
   # send email if task fails
   email_on_failure: True
   # send email if task is retried
   email_on_retry: False
   # delay between retries
-  retry_delay: 00:05:00
+  retry_delay: 7200
   # number of retries
-  retries: 1
+  retries: 2
   # use exponential backoff between retries
   retry_exponential_backoff: True
   # backoff factor for exporential backoff
   backoff_factor: 1
   # maximum retry delay
   max_retry_delay: 1 day
-  start_date:
-  end_date:
+  start_date: "{{start_date}}"
+  end_date: "{{end_date}}"
   # check cron scheduler at: https://crontab.guru/
   schedule_interval: '@daily'
   timezone: UTC

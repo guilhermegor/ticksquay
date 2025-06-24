@@ -29,11 +29,11 @@ print_status() {
 }
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+AIRFLOW_PROJ_DIR="$(dirname "$SCRIPT_DIR")"
 
 POSTGRES_PORT=5432
 POSTGRES_COMPOSE_FILE="postgres_docker-compose.yml"
-POSTGRES_ENV_FILE="db_mktdata.env"
+POSTGRES_ENV_FILE=".env"
 DATA_DIR="$HOME/Downloads/mktdata_storage"
 
 is_port_free() {
@@ -119,7 +119,6 @@ kill_with_lsof() {
     return 0
 }
 
-# Kill processes using netstat
 kill_with_netstat() {
     local port=$1
     print_status "config" "Method 2: Trying netstat..."
@@ -161,7 +160,6 @@ kill_with_netstat() {
     return 0
 }
 
-# Kill processes using fuser
 kill_with_fuser() {
     local port=$1
     print_status "config" "Method 3: Trying fuser..."
@@ -202,7 +200,6 @@ kill_with_fuser() {
     fi
 }
 
-# Kill processes using ss
 kill_with_ss() {
     local port=$1
     print_status "config" "Method 4: Trying ss..."
@@ -244,7 +241,6 @@ kill_with_ss() {
     return 0
 }
 
-# Kill processes using pkill
 kill_with_pkill() {
     local port=$1
     print_status "config" "Method 5: Trying pkill..."
@@ -277,7 +273,6 @@ kill_with_pkill() {
     return 0
 }
 
-# Main function to kill PostgreSQL processes on port
 kill_postgres_port() {
     local port=$1
     local max_attempts=3
@@ -357,7 +352,6 @@ kill_postgres_port() {
     return 0
 }
 
-# Clean up Docker resources
 cleanup_docker() {
     print_status "info" "Cleaning up Docker resources..."
 
@@ -374,7 +368,6 @@ cleanup_docker() {
     print_status "success" "Docker cleanup completed"
 }
 
-# Clean up data directory
 cleanup_data() {
     print_status "info" "Cleaning up data directory..."
 
@@ -398,7 +391,7 @@ start_postgres() {
 # PostgreSQL Configuration
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres123
-POSTGRES_DB=mktdata
+POSTGRES_DB=postgres
 
 # PgAdmin Configuration
 PGADMIN_DEFAULT_EMAIL=admin@example.com
@@ -428,14 +421,14 @@ EOF
     sleep 10
 
     print_status "config" "Showing PostgreSQL logs..."
-    docker compose --env-file "$POSTGRES_ENV_FILE" -f "$POSTGRES_COMPOSE_FILE" logs db_mktdata || true
+    docker compose --env-file "$POSTGRES_ENV_FILE" -f "$POSTGRES_COMPOSE_FILE" logs postgres_mktdata || true
 
     print_status "config" "Testing PostgreSQL connection..."
     local max_wait=30
     local wait_time=0
 
     while [ $wait_time -lt $max_wait ]; do
-        if docker compose --env-file "$POSTGRES_ENV_FILE" -f "$POSTGRES_COMPOSE_FILE" exec -T db_mktdata pg_isready -U postgres &>/dev/null; then
+        if docker compose --env-file "$POSTGRES_ENV_FILE" -f "$POSTGRES_COMPOSE_FILE" exec -T postgres_mktdata pg_isready -U postgres &>/dev/null; then
             print_status "success" "PostgreSQL is ready and accepting connections!"
             return 0
         fi
@@ -448,7 +441,6 @@ EOF
     print_status "warning" "PostgreSQL may not be fully ready yet, but containers are running"
 }
 
-# Initialize Docker environment
 init_docker() {
     print_status "config" "Checking Docker environment..."
 
@@ -484,12 +476,11 @@ init_docker() {
     fi
 }
 
-# Main function
 main() {
     print_status "info" "Starting PostgreSQL environment test..."
 
     # Change to project root directory
-    cd "$PROJECT_ROOT"
+    cd "$AIRFLOW_PROJ_DIR"
 
     # Show current status first
     check_postgres_status
