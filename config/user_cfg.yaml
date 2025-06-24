@@ -12,7 +12,7 @@ default_args_airflow:
   # delay between retries
   retry_delay: 7200
   # number of retries
-  retries: 2
+  retries: 3
   # use exponential backoff between retries
   retry_exponential_backoff: True
   # backoff factor for exporential backoff

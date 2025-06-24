@@ -99,6 +99,8 @@ run_scheduler_no_cache_logs: check_docker docker_airflow_down_no_cache
 
 run_stack_no_cache_logs: docker_airflow_down_no_cache docker_postgres_down clean_ports run_db run_scheduler_no_cache_logs
 
+run_stack_no_cache: docker_airflow_down_no_cache docker_postgres_down clean_ports run_db run_scheduler_no_cache
+
 # git
 precommit_update:
 	poetry run pre-commit install

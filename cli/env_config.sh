@@ -72,6 +72,7 @@ append_if_not_exist "$ENV_FILE" "POSTGRES_PORT" "5432"
 append_if_not_exist "$ENV_FILE" "POSTGRES_HOST" "postgres_mktdata"
 append_if_not_exist "$ENV_FILE" "PGADMIN_DEFAULT_EMAIL" "admin@admin.com"
 append_if_not_exist "$ENV_FILE" "PGADMIN_DEFAULT_PASSWORD" "admin123"
+append_if_not_exist "$ENV_FILE" "LIST_EMAILS_ADDRESSES" "example1@example1.com,example2@example2.com"
 
 if [ -f "$ENV_FILE" ] && [ -f "$ENV_FILE" ]; then
     print_status "success" "Environment files setup complete!"
