@@ -10,15 +10,15 @@ default_args_airflow:
   # send email if task is retried
   email_on_retry: False
   # delay between retries
-  retry_delay: 7200
+  retry_delay: 60
   # number of retries
-  retries: 3
+  retries: 2
   # use exponential backoff between retries
   retry_exponential_backoff: True
   # backoff factor for exporential backoff
   backoff_factor: 1
   # maximum retry delay
-  max_retry_delay: 86400
+  max_retry_delay: 120
   start_date: "{{start_date}}"
   end_date: "{{end_date}}"
   # check cron scheduler at: https://crontab.guru/
@@ -31,7 +31,7 @@ default_args_airflow:
   # default view of dag: graph or tree
   default_view: graph
   # timeout for the whole dag to run
-  dagrun_timeout: 7200
+  dagrun_timeout: 180
   # service level agreement for the dag to run (SLA)
   sla: 7200
   # maximum active runs, of the same dag, at the same time

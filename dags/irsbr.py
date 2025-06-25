@@ -1,11 +1,11 @@
 """DAG for IRSBR records data ingestion from Brazil taxation system."""
+import logging
 import os
 
 from airflow.decorators import dag, task
-from airflow.exception import AirflowException
-from airflow.exceptions import AirflowFailException
-from airflow.utils.dates import days_ago
-from airflow.utils.models import DagRun
+from airflow.exceptions import AirflowException, AirflowFailException
+from airflow.models.dagrun import DagRun
+from airflow.operators.python import get_current_context
 from airflow.utils.state import DagRunState
 from dotenv import load_dotenv
 from psycopg import connect
@@ -17,6 +17,7 @@ from stpstone.utils.parsers.dicts import HandlingDicts
 from config.global_slots import CLS_POSTGRES_RAW, USER, YAML_USER_CFG
 
 
+logger = logging.getLogger(__name__)
 env_paths = [
     os.path.join(os.getenv("AIRFLOW_PROJ_DIR", "/opt/airflow"), ".env"),
     "/opt/airflow/.env",
@@ -38,8 +39,8 @@ def get_default_args() -> dict[str, str | list]:
     dict_replc = {
         "owner": USER,
         "list_email_addresses": [email.strip() for email in str_emails.split(",")],
-        "start_date": DatesBR().curr_date,
-        "end_date": DatesBR().curr_date,
+        "start_date": DatesBR().sub_working_days(DatesBR().curr_date, 1),
+        "end_date": DatesBR().add_working_days(DatesBR().curr_date, 30),
     }
     return HandlingDicts().fill_placeholders(YAML_USER_CFG["default_args_airflow"], dict_replc)
 
@@ -50,6 +51,7 @@ def get_default_args() -> dict[str, str | list]:
     tags=["taxation", "brazil", "data_ingestion"],
     default_args=get_default_args(),
     catchup=False,
+    schedule_interval=None,
 )
 def irsbr_records_dag() -> None:
     """Orchestrate the ingestion of Brazilian tax system records."""
@@ -57,12 +59,14 @@ def irsbr_records_dag() -> None:
     @task(task_id="startup_trigger")
     def startup_trigger() -> bool:
         """Ensure DAG only runs once per day."""
-        list_dag_runs = DagRun.find(dag_id="irsbr", state=DagRunState.SUCCESS)
-        list_dag_runs.sort(key=lambda x: x.execution_date, reverse=True)
-        if list_dag_runs and list_dag_runs[0].execution_date >= days_ago(1):
-            raise AirflowException(f"DAG already ran on {list_dag_runs[0].execution_date}. "
-                                   + "Manual trigger required for new execution.")
-        return True
+        dag_run = get_current_context().get('dag_run')
+        if not dag_run or dag_run.run_id.startswith('manual__') or dag_run.external_trigger:
+            return True
+        list_successful_runs = DagRun.find(dag_id="irsbr", state=DagRunState.SUCCESS,
+                                   execution_start_date=DatesBR().curr_date)
+        if not list_successful_runs:
+            return True
+        raise AirflowException("DAG already ran today. Manual trigger required.")
 
     @task(task_id="verify_db_connection")
     def verify_db_connection() -> bool:
@@ -110,13 +114,19 @@ def irsbr_records_dag() -> None:
 
         except Exception as e:
             error_msg = f"Database connection failed: {str(e)}"
-            CreateLog().error(None, error_msg)
+            CreateLog().log_message(None, error_msg, "error")
             raise AirflowFailException(error_msg) from e
 
-    @task(task_id="initialize_irsbr")
-    def initialize_irsbr() -> IRSBR:
-        """Initialize IRSBR client with database connection."""
+    @task(task_id="initialize_client")
+    def initialize_client() -> IRSBR:
+        """Initialize client with database connection."""
         return IRSBR(session=None, cls_db=CLS_POSTGRES_RAW)
+
+    @task(task_id="debug_check")
+    def debug_check() -> bool:
+        """Debug check."""
+        print("DAG is executing, database connection is working.")
+        return True
 
     @task(task_id="ingest_companies")
     def ingest_companies(irsbr: IRSBR) -> None:
@@ -171,21 +181,22 @@ def irsbr_records_dag() -> None:
     # task dependencies
     trigger = startup_trigger()
     db_check = verify_db_connection()
-    irsbr_client = initialize_irsbr()
-    companies = ingest_companies(irsbr_client)
-    businesses = ingest_businesses(irsbr_client)
-    tax_system = ingest_taxation_system(irsbr_client)
-    shareholders = ingest_shareholders(irsbr_client)
-    countries = ingest_countries(irsbr_client)
-    cities = ingest_cities(irsbr_client)
-    shareholders_education = ingest_shareholders_education(irsbr_client)
-    legal_form = ingest_legal_form(irsbr_client)
-    ncea = ingest_ncea(irsbr_client)
-    registration_status = ingest_registration_status(irsbr_client)
+    client_instance = initialize_client()
+    debug = debug_check()
+    companies = ingest_companies(client_instance)
+    businesses = ingest_businesses(client_instance)
+    tax_system = ingest_taxation_system(client_instance)
+    shareholders = ingest_shareholders(client_instance)
+    countries = ingest_countries(client_instance)
+    cities = ingest_cities(client_instance)
+    shareholders_education = ingest_shareholders_education(client_instance)
+    legal_form = ingest_legal_form(client_instance)
+    ncea = ingest_ncea(client_instance)
+    registration_status = ingest_registration_status(client_instance)
 
     # define workflow
-    trigger >> db_check >> irsbr_client
-    irsbr_client >> companies >> businesses >> tax_system >> shareholders
+    trigger >> db_check >> client_instance >> debug
+    debug >> companies >> businesses >> tax_system >> shareholders
     shareholders >> countries >> cities >> shareholders_education >> legal_form >> ncea
     ncea >> registration_status
 
