@@ -82,7 +82,7 @@ def irsbr_records_dag() -> None:
             list_required_tables = [
                 "br_irs_companies",
                 "br_irs_businesses",
-                "br_irs_taxation_system",
+                "br_irs_simp_tax_sys",
                 "br_irs_shareholders"
             ]
             with conn.cursor() as cur:
